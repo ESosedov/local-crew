@@ -1,0 +1,4 @@
+172.19.0.1 - - [06/Aug/2023:10:48:40 +0000] "GET / HTTP/1.1" 404 32104 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+172.19.0.1 - - [06/Aug/2023:10:48:40 +0000] "GET /favicon.ico HTTP/1.1" 404 191327 "http://localhost/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+172.19.0.1 - - [06/Aug/2023:17:17:38 +0000] "OPTIONS /123_s.jpg HTTP/1.1" 499 0 "https://onlinevkino.com/5735-treugolnik-pechali-2022.html" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+172.19.0.1 - - [06/Aug/2023:17:17:38 +0000] "GET /123_s.jpg HTTP/1.1" 500 224143 "https://onlinevkino.com/5735-treugolnik-pechali-2022.html" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"

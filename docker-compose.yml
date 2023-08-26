@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+    php:
+        build: docker/php
+        container_name: php
+        volumes:
+            - "./:/var/www/html"
+            - "./docker_var/logs/php/:/var/log/php-fpm"
+
+    nginx:
+        image: "nginx:alpine"
+        container_name: nginx
+        working_dir: "/var/www/html"
+        ports:
+            - "80:80"
+        volumes:
+            - "./:/var/www/html"
+            - "./docker/nginx/conf.d:/etc/nginx/conf.d"
+            - "./docker_var/logs/nginx:/var/log/nginx"
+
+    postgres:
+        image: "postgres:15-alpine"
+        container_name: postgres
+        volumes:
+            - "./docker_var/postgresql:/var/lib/postgresql/data"
+        environment:
+            - POSTGRES_USER=${DATABASE_USER}
+            - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+            - LANG:=ru_RU.utf8
+            - POSTGRES_INITDB_ARGS:=--locale-provider=icu --icu-locale=ru-RU
+        ports:
+            - "5432:5432"
