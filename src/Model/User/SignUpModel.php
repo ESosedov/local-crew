@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints\EqualTo;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotNull;
 
-class SingUpModel
+class SignUpModel
 {
     #[Email]
     #[NotNull]

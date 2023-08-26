@@ -2,7 +2,7 @@
 
 namespace App\Controller\Api;
 
-use App\Model\ErrorResponseModel;
+use App\Model\Api\ErrorResponseModel;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
