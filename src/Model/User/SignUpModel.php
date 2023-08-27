@@ -23,9 +23,9 @@ class SignUpModel
 
     #[NotNull]
     private string $city;
-    private ?int $age;
-    private ?string $gender;
-    private ?string $info;
+    private ?int $age = null;
+    private ?string $gender = null;
+    private ?string $info = null;
 
     public function getEmail(): string
     {

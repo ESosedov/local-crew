@@ -10,7 +10,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: "users")]
-    class User extends AbstractBaseUuidEntity implements UserInterface, PasswordAuthenticatedUserInterface
+class User extends AbstractBaseUuidEntity implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use TimestampableEntity;
 
@@ -27,7 +27,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['comment' => 'User`s gender'])]
     private ?string $gender;
     #[ORM\Column(type: 'string', nullable: true, options: ['comment' => 'User`s info'])]
-    private string $info;
+    private ?string $info;
 
     public function getEmail(): string
     {
@@ -101,12 +101,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
         return $this;
     }
 
-    public function getInfo(): string
+    public function getInfo(): ?string
     {
         return $this->info;
     }
 
-    public function setInfo(string $info): self
+    public function setInfo(?string $info): self
     {
         $this->info = $info;
 
@@ -134,6 +134,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
     public function getUserIdentifier(): ?string
     {
-        return $this->id;
+        return $this->email;
     }
 }
