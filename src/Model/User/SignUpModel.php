@@ -15,7 +15,7 @@ class SignUpModel
     #[NotNull]
     #[Length(min: 4)]
     private string $password;
-    #[EqualTo(propertyPath: 'password')]
+    #[EqualTo(propertyPath: 'password', message: 'This value should be equal to password field.')]
     private string $confirmPassword;
 
     #[NotNull]

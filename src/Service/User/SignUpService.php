@@ -3,9 +3,11 @@
 namespace App\Service\User;
 
 use App\Entity\User;
+use App\Model\User\IdResponse;
 use App\Model\User\SignUpModel;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class SignUpService
@@ -14,14 +16,13 @@ class SignUpService
         private UserRepository $userRepository,
         private UserPasswordHasherInterface $userPasswordHasher,
         private EntityManagerInterface $entityManager,
-    )
-    {
+    ) {
     }
 
     public function signUp(SignUpModel $signUpModel)
     {
         if (null !== $this->userRepository->getByEmail($signUpModel->getEmail())) {
-            throw new \Exception('User with this Email already exists.');
+            throw new Exception('User with this Email already exists.');
         }
 
         $user = new User();
@@ -38,9 +39,6 @@ class SignUpService
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
-
-        ;
-
+        return new IdResponse($user->getId());
     }
-
 }

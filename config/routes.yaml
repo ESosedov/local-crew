@@ -1,6 +1,6 @@
 controllers:
     resource: ../src/Controller/
-    type: attribute
+    type: annotation
 
 api_login_check:
     path: /api/v1/auth/login

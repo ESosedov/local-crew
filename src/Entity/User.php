@@ -34,9 +34,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
         return $this->email;
     }
 
-    public function getName(): string
+    public function setEmail(string $email): self
     {
-        return $this->name;
+        $this->email = $email;
+
+        return $this;
     }
 
     public function getPassword(): string
@@ -44,9 +46,23 @@ use Symfony\Component\Security\Core\User\UserInterface;
         return $this->password;
     }
 
-    public function setPassword(string $password): void
+    public function setPassword(string $password): self
     {
         $this->password = $password;
+
+        return $this;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
     }
 
     public function getCity(): ?string
@@ -54,9 +70,23 @@ use Symfony\Component\Security\Core\User\UserInterface;
         return $this->city;
     }
 
+    public function setCity(?string $city): self
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
     public function getAge(): ?int
     {
         return $this->age;
+    }
+
+    public function setAge(?int $age): self
+    {
+        $this->age = $age;
+
+        return $this;
     }
 
     public function getGender(): ?string
@@ -64,9 +94,23 @@ use Symfony\Component\Security\Core\User\UserInterface;
         return $this->gender;
     }
 
+    public function setGender(?string $gender): self
+    {
+        $this->gender = $gender;
+
+        return $this;
+    }
+
     public function getInfo(): string
     {
         return $this->info;
+    }
+
+    public function setInfo(string $info): self
+    {
+        $this->info = $info;
+
+        return $this;
     }
 
     public function getRoles(): array
@@ -83,55 +127,13 @@ use Symfony\Component\Security\Core\User\UserInterface;
     {
     }
 
-    public function getUsername()
+    public function getUsername(): string
     {
         return $this->email;
     }
 
-    private function getUserIdentifier(): string
+    public function getUserIdentifier(): ?string
     {
         return $this->id;
-    }
-
-    public function setEmail(string $email): self
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    public function setCity(?string $city): self
-    {
-        $this->city = $city;
-
-        return $this;
-    }
-
-    public function setAge(?int $age): self
-    {
-        $this->age = $age;
-
-        return $this;
-    }
-
-    public function setGender(?string $gender): self
-    {
-        $this->gender = $gender;
-
-        return $this;
-    }
-
-    public function setInfo(string $info): self
-    {
-        $this->info = $info;
-
-        return $this;
     }
 }
