@@ -17,7 +17,11 @@ class AuthController extends ApiController
     /**
      * @OA\Response(
      *     response=200,
-     *     description="Sign-up user"
+     *     description="Sign-up user",
+     *     @OA\JsonContent(
+     *         @OA\Property(property="token", type="string"),
+     *         @OA\Property(property="refresh_token", type="string")
+     *     )
      * )
      * @OA\Response(
      *     response=409,
