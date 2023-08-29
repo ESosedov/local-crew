@@ -1,5 +1,6 @@
 FROM php:8.0-fpm
 
+COPY ./composer.json composer.json
 RUN apt-get update && apt-get install -y \
         libpq-dev \
         git \
