@@ -1,7 +1,7 @@
 version: '3.8'
 services:
     php:
-        build: ./
+        build: docker/php
         container_name: php
         volumes:
             - "./:/var/www/html"
