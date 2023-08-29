@@ -1,3 +1,4 @@
+#!/bin/bash
 docker compose up -d
 docker exec -it php bash
 composer install
