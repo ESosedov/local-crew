@@ -22,7 +22,7 @@ COPY . /var/www/html
 
 RUN apt-get update && apt-get install -y nginx
 
-COPY docker/nginx/conf.d /etc/nginx/sites-available/default
+COPY docker/nginx/conf.d /etc/nginx/conf.d
 
 EXPOSE 80
 
