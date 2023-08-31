@@ -1,20 +1,17 @@
-FROM php:8.0-fpm
+FROM composer:2.3.8 as composer_build
 
-RUN apt-get update && apt-get install -y \
-        libpq-dev \
-        git \
-        curl \
-        libpng-dev \
-        libonig-dev \
-        libxml2-dev \
-        zip \
-        unzip \
-    && docker-php-ext-install -j$(nproc) pgsql \
-    && docker-php-ext-install -j$(nproc) pdo_pgsql \
-    && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+WORKDIR /app
+COPY . /app
+RUN composer install --optimize-autoloader --no-dev --ignore-platform-reqs --no-interaction --no-scripts --prefer-dist \
+    && composer require annotations
 
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-WORKDIR "/var/www/html"
-
-CMD ["./start.sh"]
+FROM php:8.0-apache
+ENV APP_HOME /var/www/html
+COPY --from=composer_build /app/ /var/www/html/
+RUN sed -i -e "s/html/html\/public/g" /etc/apache2/sites-enabled/000-default.conf \
+    && usermod -u 1000 www-data && groupmod -g 1000 www-data \
+    && chown -R www-data:www-data /var/www/html \
+    && a2enmod rewrite \
+    && sed -i "s/80/\${PORT}/g" /etc/apache2/sites-enabled/000-default.conf /etc/apache2/ports.conf
+ENTRYPOINT []
+CMD docker-php-entrypoint apache2-foreground
