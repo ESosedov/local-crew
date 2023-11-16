@@ -30,14 +30,7 @@ class SignUpService
         }
 
         $user = new User();
-        $user
-            ->setEmail($signUpModel->getEmail())
-            ->setName($signUpModel->getName())
-            ->setCity($signUpModel->getCity())
-            ->setAge($signUpModel->getAge())
-            ->setGender($signUpModel->getGender())
-            ->setInfo($signUpModel->getInfo());
-
+        $user->setEmail($signUpModel->getEmail());
         $user->setPassword($this->userPasswordHasher->hashPassword($user, $signUpModel->getPassword()));
 
         $this->entityManager->persist($user);

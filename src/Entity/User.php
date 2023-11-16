@@ -18,8 +18,8 @@ class User extends AbstractBaseUuidEntity implements UserInterface, PasswordAuth
     private string $email;
     #[ORM\Column(type: 'string', nullable: false, options: ['comment' => "User`s password"])]
     private string $password;
-    #[ORM\Column(type: 'string', length: 255, nullable: false, options: ['comment' => "User`s name"])]
-    private string $name;
+    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['comment' => "User`s name"])]
+    private ?string $name;
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['comment' => "User`s city"])]
     private ?string $city;
     #[ORM\Column(type: 'integer', nullable: true, options: ['comment' => "User`s age"])]
@@ -53,12 +53,12 @@ class User extends AbstractBaseUuidEntity implements UserInterface, PasswordAuth
         return $this;
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(?string $name): self
     {
         $this->name = $name;
 

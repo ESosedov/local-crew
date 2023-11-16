@@ -11,5 +11,4 @@ class RequestBodyConvertException extends RuntimeException
     {
         parent::__construct('error while unmarshalling request body', 0, $previous);
     }
-
 }

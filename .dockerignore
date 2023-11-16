@@ -1,0 +1,41 @@
+# excludes from the docker image/build
+
+# 1. Ignore Symfony-specific files we don't need
+**/*.md
+**/*.php~
+**/*.dist.php
+**/*.dist
+**/*.cache
+**/._*
+**/.dockerignore
+**/.git/
+**/.gitattributes
+**/.gitignore
+**/.gitmodules
+**/docker-compose.*.yaml
+**/docker-compose.*.yml
+**/docker-compose.yaml
+**/docker-compose.yml
+**/Dockerfile
+.github/
+docs/
+public/bundles/
+tests/
+var/
+vendor/
+.editorconfig
+*.env*
+docker_var/
+
+# 2. Ignore common files/directories we don't need
+.vscode
+.idea
+**/*node_modules
+**.git
+**.gitignore
+**.gitattributes
+**.sass-cache
+**/*~
+**/*.log
+**/.DS_Store
+**/Thumbs.db

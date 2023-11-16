@@ -26,12 +26,12 @@ class AuthController extends ApiController
      * @OA\Response(
      *     response=409,
      *     description="User already exists",
-     *     @Model( type=ErrorResponse::class)
+     *     @Model(type=ErrorResponse::class)
      * )
      * @OA\Response(
      *      response=400,
      *      description="Validation failed",
-     *      @Model( type=ErrorResponse::class)
+     *      @Model(type=ErrorResponse::class)
      *  )
      * @OA\RequestBody(@Model(type=SignUpModel::class))
      */
