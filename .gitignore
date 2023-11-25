@@ -7,12 +7,16 @@
 /public/bundles/
 /var/
 /vendor/
+/.env
 ###< symfony/framework-bundle ###
 
 ###> lexik/jwt-authentication-bundle ###
 /config/jwt/*.pem
 ###< lexik/jwt-authentication-bundle ###
 /docker_var/
+/info
+/.fly/
+/.idea/
 
 ###> friendsofphp/php-cs-fixer ###
 /.php-cs-fixer.php
