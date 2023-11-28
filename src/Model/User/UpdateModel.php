@@ -3,7 +3,7 @@
 namespace App\Model\User;
 
 use App\Model\Event\EventShortModel;
-use App\Model\Location\LocationModel;
+use App\Model\City\CityModel;
 
 class UpdateModel
 {
@@ -12,8 +12,7 @@ class UpdateModel
         private ?string $about,
         private ?int $age,
         private ?string $gender,
-        private ?string $city,
-        private ?LocationModel $location,
+        private ?CityModel $city,
         private ?string $avatar,
     ) {
     }
@@ -38,14 +37,9 @@ class UpdateModel
         return $this->gender;
     }
 
-    public function getCity(): ?string
+    public function getCity(): ?CityModel
     {
         return $this->city;
-    }
-
-    public function getLocation(): ?LocationModel
-    {
-        return $this->location;
     }
 
     public function getAvatar(): ?string

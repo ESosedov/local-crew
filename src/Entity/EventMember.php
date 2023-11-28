@@ -20,9 +20,9 @@ class EventMember extends AbstractBaseUuidEntity
     #[ORM\JoinColumn(unique: true)]
     private User $user;
 
-    #[ORM\Column(type: 'boolean',nullable: false)]
+    #[ORM\Column(type: 'boolean', nullable: false)]
     private bool $isAuthor;
 
-    #[ORM\Column(type: 'boolean',nullable: false)]
+    #[ORM\Column(type: 'boolean', nullable: false)]
     private bool $isApproved;
 }

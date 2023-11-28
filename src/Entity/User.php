@@ -16,16 +16,23 @@ class User extends AbstractBaseUuidEntity implements UserInterface, PasswordAuth
 
     #[ORM\Column(type: 'string', length: 255, unique: true, nullable: false, options: ['comment' => "User`s login"])]
     private string $email;
+
     #[ORM\Column(type: 'string', nullable: false, options: ['comment' => "User`s password"])]
     private string $password;
+
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['comment' => "User`s name"])]
-    private ?string $name;
-    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['comment' => "User`s city"])]
-    private ?string $city;
+    private string $name;
+
+    #[ORM\ManyToOne(targetEntity: City::class)]
+    #[ORM\JoinColumn(unique: true)]
+    private City $city;
+
     #[ORM\Column(type: 'integer', nullable: true, options: ['comment' => "User`s age"])]
     private ?int $age;
+
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['comment' => 'User`s gender'])]
     private ?string $gender;
+
     #[ORM\Column(type: 'string', nullable: true, options: ['comment' => 'User`s info'])]
     private ?string $info;
 
@@ -53,24 +60,24 @@ class User extends AbstractBaseUuidEntity implements UserInterface, PasswordAuth
         return $this;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function setName(?string $name): self
+    public function setName(string $name): self
     {
         $this->name = $name;
 
         return $this;
     }
 
-    public function getCity(): ?string
+    public function getCity(): City
     {
         return $this->city;
     }
 
-    public function setCity(?string $city): self
+    public function setCity(City $city): self
     {
         $this->city = $city;
 

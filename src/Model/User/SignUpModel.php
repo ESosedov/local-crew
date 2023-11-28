@@ -2,6 +2,7 @@
 
 namespace App\Model\User;
 
+use App\Model\City\CityModel;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\EqualTo;
 use Symfony\Component\Validator\Constraints\Length;
@@ -17,6 +18,13 @@ class SignUpModel
     private string $password;
     #[EqualTo(propertyPath: 'password', message: 'This value should be equal to password field.')]
     private string $confirmPassword;
+    #[NotNull]
+    private string $name;
+    private ?CityModel $city = null;
+    private ?int $age = null;
+    private ?string $gender = null;
+    private ?string $about = null;
+    private ?string $avatar = null;
 
     public function getEmail(): string
     {
@@ -40,7 +48,6 @@ class SignUpModel
         $this->password = $password;
 
         return $this;
-
     }
 
     public function getConfirmPassword(): string
@@ -53,6 +60,77 @@ class SignUpModel
         $this->confirmPassword = $confirmPassword;
 
         return $this;
+    }
 
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getCity(): ?CityModel
+    {
+        return $this->city;
+    }
+
+    public function setCity(?CityModel $city): self
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    public function getAge(): ?int
+    {
+        return $this->age;
+    }
+
+    public function setAge(?int $age): self
+    {
+        $this->age = $age;
+
+        return $this;
+    }
+
+    public function getGender(): ?string
+    {
+        return $this->gender;
+    }
+
+    public function setGender(?string $gender): self
+    {
+        $this->gender = $gender;
+
+        return $this;
+    }
+
+    public function getAbout(): ?string
+    {
+        return $this->about;
+    }
+
+    public function setAbout(?string $about): self
+    {
+        $this->about = $about;
+
+        return $this;
+    }
+
+    public function getAvatar(): ?string
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar(?string $avatar): self
+    {
+        $this->avatar = $avatar;
+
+        return $this;
     }
 }

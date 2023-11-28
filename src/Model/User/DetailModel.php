@@ -3,26 +3,31 @@
 namespace App\Model\User;
 
 use App\Model\Event\EventShortModel;
-use App\Model\Location\LocationModel;
+use App\Model\City\CityModel;
 use DateTimeInterface;
 
 class DetailModel
 {
     public function __construct(
+        private string $id,
         private ?string $name,
         private ?string $avatar,
         private ?string $about,
         private DateTimeInterface $registrationDate,
         private string $email,
-        private ?string $city,
         private ?int $age,
         private ?string $gender,
-        private ?LocationModel $location,
+        private ?CityModel $city,
         /**
          * @var EventShortModel[]
          */
         private array $events = [],
     ) {
+    }
+
+    public function getId(): string
+    {
+        return $this->id;
     }
 
     public function getName(): ?string
@@ -50,11 +55,6 @@ class DetailModel
         return $this->email;
     }
 
-    public function getCity(): ?string
-    {
-        return $this->city;
-    }
-
     public function getAge(): ?int
     {
         return $this->age;
@@ -65,9 +65,9 @@ class DetailModel
         return $this->gender;
     }
 
-    public function getLocation(): ?LocationModel
+    public function getCity(): ?CityModel
     {
-        return $this->location;
+        return $this->city;
     }
 
     public function getEvents(): array

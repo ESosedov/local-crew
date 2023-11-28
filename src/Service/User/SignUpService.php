@@ -7,6 +7,7 @@ use App\Exception\User\UserAlreadyExistsException;
 use App\Model\User\IdResponse;
 use App\Model\User\SignUpModel;
 use App\Repository\UserRepository;
+use App\Service\City\CityService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Lexik\Bundle\JWTAuthenticationBundle\Security\Http\Authentication\AuthenticationSuccessHandler;
@@ -20,6 +21,7 @@ class SignUpService
         private UserPasswordHasherInterface $userPasswordHasher,
         private EntityManagerInterface $entityManager,
         private AuthenticationSuccessHandler $successHandler,
+        private CityService $cityService,
     ) {
     }
 
@@ -30,8 +32,16 @@ class SignUpService
         }
 
         $user = new User();
-        $user->setEmail($signUpModel->getEmail());
+        $user
+            ->setEmail($signUpModel->getEmail())
+            ->setName($signUpModel->getName())
+            ->setAge($signUpModel->getAge())
+            ->setGender($signUpModel->getGender())
+            ->setInfo($signUpModel->getAbout());
+
         $user->setPassword($this->userPasswordHasher->hashPassword($user, $signUpModel->getPassword()));
+        $city = $this->cityService->getCity($signUpModel->getCity());
+        $user->setCity($city);
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
