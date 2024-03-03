@@ -2,9 +2,8 @@
 
 namespace App\Model\User;
 
-use App\Model\Event\EventShortModel;
 use App\Model\City\CityModel;
-use DateTimeInterface;
+use App\Model\Event\EventShortModel;
 
 class DetailModel
 {
@@ -13,7 +12,7 @@ class DetailModel
         private ?string $name,
         private ?string $avatar,
         private ?string $about,
-        private DateTimeInterface $registrationDate,
+        private \DateTimeInterface $registrationDate,
         private string $email,
         private ?int $age,
         private ?string $gender,
@@ -45,7 +44,7 @@ class DetailModel
         return $this->about;
     }
 
-    public function getRegistrationDate(): DateTimeInterface
+    public function getRegistrationDate(): \DateTimeInterface
     {
         return $this->registrationDate;
     }

@@ -9,25 +9,24 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\Table(name: "users")]
+#[ORM\Table(name: 'users')]
 class User extends AbstractBaseUuidEntity implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use TimestampableEntity;
 
-    #[ORM\Column(type: 'string', length: 255, unique: true, nullable: false, options: ['comment' => "User`s login"])]
+    #[ORM\Column(type: 'string', length: 255, unique: true, nullable: false, options: ['comment' => 'User`s login'])]
     private string $email;
 
-    #[ORM\Column(type: 'string', nullable: false, options: ['comment' => "User`s password"])]
+    #[ORM\Column(type: 'string', nullable: false, options: ['comment' => 'User`s password'])]
     private string $password;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['comment' => "User`s name"])]
+    #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['comment' => 'User`s name'])]
     private string $name;
 
     #[ORM\ManyToOne(targetEntity: City::class)]
-    #[ORM\JoinColumn(unique: true)]
     private City $city;
 
-    #[ORM\Column(type: 'integer', nullable: true, options: ['comment' => "User`s age"])]
+    #[ORM\Column(type: 'integer', nullable: true, options: ['comment' => 'User`s age'])]
     private ?int $age;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['comment' => 'User`s gender'])]
@@ -35,6 +34,10 @@ class User extends AbstractBaseUuidEntity implements UserInterface, PasswordAuth
 
     #[ORM\Column(type: 'string', nullable: true, options: ['comment' => 'User`s info'])]
     private ?string $info;
+
+    #[ORM\OneToOne(targetEntity: File::class)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
+    private ?File $avatar;
 
     public function getEmail(): string
     {
@@ -142,5 +145,15 @@ class User extends AbstractBaseUuidEntity implements UserInterface, PasswordAuth
     public function getUserIdentifier(): ?string
     {
         return $this->email;
+    }
+
+    public function getAvatar(): ?File
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar(File $avatar): void
+    {
+        $this->avatar = $avatar;
     }
 }

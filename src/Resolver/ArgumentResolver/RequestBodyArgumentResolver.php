@@ -5,14 +5,12 @@ namespace App\Resolver\ArgumentResolver;
 use App\Attribute\RequestBody;
 use App\Exception\RequestBodyConvertException;
 use App\Exception\ValidationException;
-use Generator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Throwable;
 
 class RequestBodyArgumentResolver implements ArgumentValueResolverInterface
 {
@@ -27,11 +25,11 @@ class RequestBodyArgumentResolver implements ArgumentValueResolverInterface
         return count($argument->getAttributes(RequestBody::class, ArgumentMetadata::IS_INSTANCEOF)) > 0;
     }
 
-    public function resolve(Request $request, ArgumentMetadata $argument): ?Generator
+    public function resolve(Request $request, ArgumentMetadata $argument): ?\Generator
     {
         try {
             $model = $this->serializer->deserialize($request->getContent(), $argument->getType(), JsonEncoder::FORMAT);
-        } catch (Throwable $throwable) {
+        } catch (\Throwable $throwable) {
             throw new RequestBodyConvertException($throwable);
         }
 
@@ -41,6 +39,5 @@ class RequestBodyArgumentResolver implements ArgumentValueResolverInterface
         }
 
         yield $model;
-
     }
 }

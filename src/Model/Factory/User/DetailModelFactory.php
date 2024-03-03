@@ -26,7 +26,7 @@ class DetailModelFactory
         return new DetailModel(
             $user->getId(),
             $user->getName(),
-            null,
+            $user->getAvatar()?->getUrl(),
             $user->getInfo(),
             $user->getCreatedAt(),
             $user->getEmail(),

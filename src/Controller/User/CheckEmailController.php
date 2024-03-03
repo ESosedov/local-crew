@@ -4,10 +4,6 @@ namespace App\Controller\User;
 
 use App\Attribute\RequestBody;
 use App\Controller\Api\ApiController;
-use App\Controller\User\UpdateUser\Handler\Handler;
-use App\Entity\User;
-use App\Model\Factory\User\DetailModelFactory;
-use App\Model\User\DetailModel;
 use App\Model\User\EmailModel;
 use App\Model\User\UpdateModel;
 use App\Service\User\CheckEmailService;
@@ -16,7 +12,6 @@ use Nelmio\ApiDocBundle\Annotation\Security;
 use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class CheckEmailController extends ApiController
 {
@@ -27,6 +22,7 @@ class CheckEmailController extends ApiController
      *     response=200,
      *     description="Email is available",
      *     )
+     *
      * @Security(name="Bearer")
      */
     #[Route(path: '/api/v1/email/check', methods: ['POST'])]
