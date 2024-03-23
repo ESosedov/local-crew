@@ -6,7 +6,6 @@ use App\Attribute\RequestBody;
 use App\Controller\Api\ApiController;
 use App\Controller\User\UpdateUser\Handler\Handler;
 use App\Entity\User;
-use App\Model\Factory\User\DetailModelFactory;
 use App\Model\User\DetailModel;
 use App\Model\User\UpdateModel;
 use Nelmio\ApiDocBundle\Annotation\Model;
@@ -23,6 +22,7 @@ class UpdateUserController extends ApiController
      * @OA\Response(
      *     response=200,
      *     description="User has updated",
+     *
      *     @Model(type=DetailModel::class)
      *     )
      */
