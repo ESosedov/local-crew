@@ -37,7 +37,7 @@ class JWTUserProvider implements PayloadAwareUserProviderInterface
 
     public function supportsClass(string $class)
     {
-        return $class === User::class || is_subclass_of($class, User::class);
+        return User::class === $class || is_subclass_of($class, User::class);
     }
 
     // deprecated

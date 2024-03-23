@@ -42,7 +42,5 @@ class ExceptionMappingResolver
     private function addMapping(string $class, int $code, bool $hidden, bool $loggable): void
     {
         $this->mappings[$class] = new ExceptionMapping($code, $hidden, $loggable);
-
     }
-
 }

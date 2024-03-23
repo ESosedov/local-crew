@@ -5,13 +5,12 @@ namespace App\Repository;
 use App\Entity\City;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use function Doctrine\ORM\QueryBuilder;
 
 /**
  * @method City|null find($id, $lockMode = null, $lockVersion = null)
  * @method City|null findOneBy(array $criteria, array $orderBy = null)
- * @method City[] findAll()
- * @method City[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method City[]    findAll()
+ * @method City[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class CityRepository extends ServiceEntityRepository
 {
@@ -49,7 +48,7 @@ class CityRepository extends ServiceEntityRepository
             ->setParameters([
                 'name' => sprintf('%%%s%%', mb_strtolower($name)),
                 'longitude' => $longitude,
-                'latitude' => $latitude
+                'latitude' => $latitude,
             ])
             ->setMaxResults(1);
 

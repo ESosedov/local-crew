@@ -3,7 +3,6 @@
 namespace App\Service\City;
 
 use App\Entity\City;
-use App\Entity\User;
 use App\Model\City\CityModel;
 use App\Repository\CityRepository;
 use Doctrine\ORM\EntityManagerInterface;

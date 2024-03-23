@@ -5,7 +5,6 @@ namespace App\Listener;
 use App\Exception\ValidationException;
 use App\Model\Api\ErrorResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -35,5 +34,4 @@ class ValidationExceptionListener
 
         $event->setResponse(new JsonResponse($data, Response::HTTP_BAD_REQUEST, [], true));
     }
-
 }

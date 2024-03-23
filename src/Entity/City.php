@@ -6,13 +6,13 @@ use App\Repository\CityRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CityRepository::class)]
-#[ORM\Table(name: "cities")]
+#[ORM\Table(name: 'cities')]
 class City extends AbstractBaseUuidEntity
 {
-    #[ORM\Column(type: 'string', length: 255, nullable: false, options: ['comment' => "City name"])]
+    #[ORM\Column(type: 'string', length: 255, nullable: false, options: ['comment' => 'City name'])]
     private string $name;
 
-    #[ORM\Column(type: 'float', nullable: true, options: ['comment' => "City longitude"])]
+    #[ORM\Column(type: 'float', nullable: true, options: ['comment' => 'City longitude'])]
     private ?float $longitude = null;
 
     #[ORM\Column(type: 'float', nullable: true, options: ['comment' => 'City latitude'])]

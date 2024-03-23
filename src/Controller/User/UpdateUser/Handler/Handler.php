@@ -6,7 +6,6 @@ use App\Entity\User;
 use App\Model\Factory\User\DetailModelFactory;
 use App\Model\User\DetailModel;
 use App\Model\User\UpdateModel;
-use App\Repository\CityRepository;
 use App\Service\City\CityService;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -35,5 +34,4 @@ class Handler
 
         return $this->factory->fromUser($user);
     }
-
 }

@@ -4,12 +4,10 @@ namespace App\Service\User;
 
 use App\Entity\User;
 use App\Exception\User\UserAlreadyExistsException;
-use App\Model\User\IdResponse;
 use App\Model\User\SignUpModel;
 use App\Repository\UserRepository;
 use App\Service\City\CityService;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use Lexik\Bundle\JWTAuthenticationBundle\Security\Http\Authentication\AuthenticationSuccessHandler;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;

@@ -2,7 +2,6 @@
 
 namespace App\Model\User;
 
-use App\Model\Event\EventShortModel;
 use App\Model\City\CityModel;
 
 class UpdateModel
