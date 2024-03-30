@@ -3,8 +3,10 @@
 namespace App\Model\Event\Factory;
 
 use App\Entity\Event;
+use App\Entity\User;
 use App\Model\Event\EventResponseModel;
 use App\Model\User\Factory\ShortModelFactory;
+use App\Model\User\PublicModel;
 use App\Repository\EventMemberRepository;
 
 class EventResponseModelFactory
@@ -15,21 +17,39 @@ class EventResponseModelFactory
     ) {
     }
 
-    public function fromEvent(Event $event): EventResponseModel
+    public function fromEvent(Event $event, User $currentUser): EventResponseModel
     {
         $members = [];
         $candidates = [];
-        $eventMembers = $this->eventMemberRepository->findBy(['event' => $event]);
+        $isFavoriteForCurrentUser = false;
+        $organizerModel = null;
+        $eventMembers = $this->eventMemberRepository->findBy(['event' => $event->getId()]);
         foreach ($eventMembers as $eventMember) {
             $user = $eventMember->getUser();
             if (true === $eventMember->isOrganizer()) {
-                $organizerShortModel = $this->userShortModelFactory->fromUser($user);
+                $organizerModel = new PublicModel(
+                    $user->getId(),
+                    $user->getName(),
+                    $user->getAvatar()?->getUrl(),
+                    $user->getInfo(),
+                    $user->getCreatedAt(),
+                    $user->getAge(),
+                    $user->getGender(),
+                );
+            }
+            if ($user === $currentUser) {
+                $isFavoriteForCurrentUser = $eventMember->isFavorite();
             }
             if (true === $eventMember->isApproved()) {
                 $members[] = $user;
             } else {
                 $candidates[] = $user;
             }
+        }
+        $categoriesIds = [];
+        $categories = $event->getCategories();
+        foreach ($categories as $category) {
+            $categoriesIds[] = $category->getId();
         }
 
         $memberModels = $this->userShortModelFactory->fromUsers($members);
@@ -43,9 +63,31 @@ class EventResponseModelFactory
             $event->getParticipationTerms(),
             $event->getDetails(),
             $event->getAvatar()?->getUrl(),
-            $organizerShortModel,
+            $organizerModel,
             $memberModels,
             $candidateModels,
+            $event->getCountMembersMax(),
+            $categoriesIds,
+            $isFavoriteForCurrentUser,
         );
+    }
+
+    /**
+     * @param Event[] $events
+     *
+     * @return EventResponseModel[]
+     */
+    public function fromEvents(array $events, User $currentUser): array
+    {
+        $eventModels = [];
+        if ([] === $events) {
+            return $eventModels;
+        }
+
+        foreach ($events as $event) {
+            $eventModels[] = $this->fromEvent($event, $currentUser);
+        }
+
+        return $eventModels;
     }
 }

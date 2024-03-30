@@ -2,7 +2,9 @@
 
 namespace App\Model\Event;
 
+use App\Model\User\PublicModel;
 use App\Model\User\ShortModel;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 
 class EventResponseModel
 {
@@ -14,11 +16,15 @@ class EventResponseModel
         private string|null $participationTerms,
         private string|null $details,
         private string|null $avatar,
-        private ShortModel $organizer,
+        private PublicModel $organizer,
         /** @var ShortModel[] */
         private array $members,
         /** @var ShortModel[] */
         private array $candidates,
+        private int|null $countMembersMax,
+        /** @var string[] */
+        private array $category,
+        private bool $isFavorite,
     ) {
     }
 
@@ -57,7 +63,7 @@ class EventResponseModel
         return $this->avatar;
     }
 
-    public function getOrganizer(): ShortModel
+    public function getOrganizer(): PublicModel
     {
         return $this->organizer;
     }
@@ -70,5 +76,21 @@ class EventResponseModel
     public function getCandidates(): array
     {
         return $this->candidates;
+    }
+
+    public function getCountMembersMax(): ?int
+    {
+        return $this->countMembersMax;
+    }
+
+    public function getCategory(): array
+    {
+        return $this->category;
+    }
+
+    #[SerializedName('isFavorite')]
+    public function isFavorite(): bool
+    {
+        return $this->isFavorite;
     }
 }

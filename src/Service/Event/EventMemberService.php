@@ -20,7 +20,9 @@ class EventMemberService
             ->setEvent($event)
             ->setUser($user)
             ->setIsApproved(true)
-            ->setIsOrganizer(true);
+            ->setIsOrganizer(true)
+            ->setIsMember(true)
+            ->setIsFavorite(true);
 
         $this->entityManager->persist($eventMember);
         $this->entityManager->flush();

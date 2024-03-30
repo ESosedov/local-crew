@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\EventRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
@@ -14,6 +16,11 @@ class Event extends AbstractBaseUuidEntity
 
     public const TYPE_ONLINE = 'online';
     public const TYPE_OFFLINE = 'offline';
+
+    public function __construct()
+    {
+        $this->categories = new ArrayCollection();
+    }
 
     #[ORM\Column(type: 'string', length: 255, nullable: false, options: ['comment' => 'Event`s title'])]
     private string $title;
@@ -52,6 +59,15 @@ class Event extends AbstractBaseUuidEntity
     #[ORM\OneToOne(targetEntity: File::class)]
     #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?File $avatar;
+
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private int|null $countMembersMax;
+
+    #[ORM\ManyToMany(targetEntity: Category::class)]
+    #[ORM\JoinTable(name: 'category_evens')]
+    #[ORM\JoinColumn(name: 'category_id', referencedColumnName: 'id')]
+    #[ORM\InverseJoinColumn(name: 'event_id', referencedColumnName: 'id')]
+    private Collection $categories;
 
     public function getTitle(): string
     {
@@ -195,5 +211,29 @@ class Event extends AbstractBaseUuidEntity
         $this->avatar = $avatar;
 
         return $this;
+    }
+
+    public function getCountMembersMax(): ?int
+    {
+        return $this->countMembersMax;
+    }
+
+    public function setCountMembersMax(?int $countMembersMax): self
+    {
+        $this->countMembersMax = $countMembersMax;
+
+        return $this;
+    }
+
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    public function addCategory(Category $category): void
+    {
+        if (!$this->categories->contains($category)) {
+            $this->categories->add($category);
+        }
     }
 }

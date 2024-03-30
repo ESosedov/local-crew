@@ -24,6 +24,12 @@ class EventMember extends AbstractBaseUuidEntity
     #[ORM\Column(type: 'boolean', nullable: false)]
     private bool $isApproved;
 
+    #[ORM\Column(type: 'boolean', nullable: false)]
+    private bool $isMember;
+
+    #[ORM\Column(type: 'boolean', nullable: false)]
+    private bool $isFavorite;
+
     public function getEvent(): Event
     {
         return $this->event;
@@ -68,6 +74,30 @@ class EventMember extends AbstractBaseUuidEntity
     public function setIsApproved(bool $isApproved): self
     {
         $this->isApproved = $isApproved;
+
+        return $this;
+    }
+
+    public function isMember(): bool
+    {
+        return $this->isMember;
+    }
+
+    public function setIsMember(bool $isMember): self
+    {
+        $this->isMember = $isMember;
+
+        return $this;
+    }
+
+    public function isFavorite(): bool
+    {
+        return $this->isFavorite;
+    }
+
+    public function setIsFavorite(bool $isFavorite): self
+    {
+        $this->isFavorite = $isFavorite;
 
         return $this;
     }

@@ -3,22 +3,23 @@
 namespace App\Model\Event;
 
 use App\Entity\Event;
+use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class CreateEventModel
 {
-    #[Assert\Length(min: 3, max: 50)]
-    #[Assert\NotNull]
     private string $title;
-    #[Assert\NotNull]
-    private \DateTimeInterface $date;
-    #[Assert\Choice([Event::TYPE_ONLINE])]
-    #[Assert\NotNull]
+    private \DateTime $date;
     private string $type;
+    /**
+     * @var string[]
+     */
+    private array $categories;
     private string|null $participationTerms = null;
     private string|null $details = null;
     private UploadedFile|null $avatar = null;
+    private int|null $countMembersMax = null;
 
     public function getTitle(): string
     {
@@ -30,12 +31,12 @@ class CreateEventModel
         $this->title = $title;
     }
 
-    public function getDate(): \DateTimeInterface
+    public function getDate(): \DateTime
     {
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): void
+    public function setDate(\DateTime $date): void
     {
         $this->date = $date;
     }
@@ -78,5 +79,29 @@ class CreateEventModel
     public function setAvatar(?UploadedFile $avatar): void
     {
         $this->avatar = $avatar;
+    }
+
+    public function getCategories(): array
+    {
+        return $this->categories;
+    }
+
+    public function setCategories(array $categories): self
+    {
+        $this->categories = $categories;
+
+        return $this;
+    }
+
+    public function getCountMembersMax(): ?int
+    {
+        return $this->countMembersMax;
+    }
+
+    public function setCountMembersMax(?int $countMembersMax): self
+    {
+        $this->countMembersMax = $countMembersMax;
+
+        return $this;
     }
 }
