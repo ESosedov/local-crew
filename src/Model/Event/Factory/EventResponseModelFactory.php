@@ -17,7 +17,7 @@ class EventResponseModelFactory
     ) {
     }
 
-    public function fromEvent(Event $event, User $currentUser): EventResponseModel
+    public function fromEvent(Event $event, User|null $currentUser): EventResponseModel
     {
         $members = [];
         $candidates = [];
@@ -77,7 +77,7 @@ class EventResponseModelFactory
      *
      * @return EventResponseModel[]
      */
-    public function fromEvents(array $events, User $currentUser): array
+    public function fromEvents(array $events, User|null $currentUser): array
     {
         $eventModels = [];
         if ([] === $events) {

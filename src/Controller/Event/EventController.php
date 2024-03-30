@@ -78,10 +78,10 @@ class EventController extends ApiController
      */
     #[Route(path: '/api/v1/event/list', methods: ['POST'])]
     public function getList(
-        #[CurrentUser] User $user,
         #[RequestBody] ListFilterModel $filterModel,
         EventService $eventService,
     ): JsonResponse {
-        return $this->json($eventService->getList($user, $filterModel));
+        $user = $this->getUser();
+        return $this->json($eventService->getList($filterModel, $user));
     }
 }

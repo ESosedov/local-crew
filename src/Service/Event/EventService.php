@@ -55,7 +55,7 @@ class EventService
         return $this->eventResponseModelFactory->fromEvent($event, $user);
     }
 
-    public function getList(User $user, ListFilterModel $filterModel): ResponseListModel
+    public function getList(ListFilterModel $filterModel, User|null $user): ResponseListModel
     {
         $listData = $this->eventListQuery->getListData($filterModel);
         $countList = $this->eventListQuery->getCountList($filterModel);
