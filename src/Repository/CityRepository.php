@@ -9,8 +9,8 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @method City|null find($id, $lockMode = null, $lockVersion = null)
  * @method City|null findOneBy(array $criteria, array $orderBy = null)
- * @method City[]    findAll()
- * @method City[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method City[] findAll()
+ * @method City[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class CityRepository extends ServiceEntityRepository
 {
@@ -31,19 +31,19 @@ class CityRepository extends ServiceEntityRepository
                 $qb->expr()->eq(
                     $qb->expr()->lower('city.name'),
                     ':name',
-                )
+                ),
             )
             ->andWhere(
                 $qb->expr()->eq(
                     'city.latitude',
-                    ':latitude'
-                )
+                    ':latitude',
+                ),
             )
             ->andWhere(
                 $qb->expr()->eq(
                     'city.longitude',
                     ':longitude',
-                )
+                ),
             )
             ->setParameters([
                 'name' => sprintf('%%%s%%', mb_strtolower($name)),

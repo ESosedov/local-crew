@@ -27,7 +27,7 @@ class ValidationExceptionListener
         $data = $this->serializer->serialize(
             new ErrorResponse(
                 $throwable->getMessage(),
-                ['violations' => $throwable->getViolation()]
+                ['violations' => $throwable->getViolation()],
             ),
             JsonEncoder::FORMAT,
         );

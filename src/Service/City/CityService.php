@@ -16,7 +16,7 @@ class CityService
     }
 
     public function getCity(
-        CityModel $cityModel
+        CityModel $cityModel,
     ): City {
         $city = $this->cityRepository->findOneByNameCoordinates(
             $cityModel->getName(),

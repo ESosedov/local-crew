@@ -2,9 +2,6 @@
 
 namespace App\Model\User;
 
-use App\Model\City\CityModel;
-use App\Model\Event\EventShortModel;
-
 class PublicModel
 {
     public function __construct(

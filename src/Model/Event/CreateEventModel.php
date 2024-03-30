@@ -2,10 +2,7 @@
 
 namespace App\Model\Event;
 
-use App\Entity\Event;
-use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\Validator\Constraints as Assert;
 
 class CreateEventModel
 {

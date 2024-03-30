@@ -30,7 +30,7 @@ class UpdateUserController extends ApiController
     public function update(
         #[CurrentUser] User $user,
         #[RequestBody] UpdateModel $updateModel,
-        Handler $handler
+        Handler $handler,
     ): JsonResponse {
         $userModelUpdated = $handler->handle($user, $updateModel);
 

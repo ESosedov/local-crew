@@ -54,8 +54,8 @@ class EventListQuery
                     $qb->expr()->andX(
                         'eventMemberOrganizer.event = event',
                         'eventMemberOrganizer.isOrganizer = :true',
-                        'eventMemberOrganizer.user = :organizerId'
-                    )
+                        'eventMemberOrganizer.user = :organizerId',
+                    ),
                 )
                 ->setParameters([
                     'true' => true,

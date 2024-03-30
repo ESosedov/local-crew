@@ -15,7 +15,7 @@ class UploadController extends ApiController
     public function upload(
         #[RequestFile(field: 'file', constraints: [])]
         UploadedFile $uploadedFile,
-        FileService $fileService
+        FileService $fileService,
     ): JsonResponse {
         return $this->json($fileService->uploadFile($uploadedFile)->getUrl());
     }
