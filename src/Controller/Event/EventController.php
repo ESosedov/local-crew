@@ -82,6 +82,7 @@ class EventController extends ApiController
         EventService $eventService,
     ): JsonResponse {
         $user = $this->getUser();
+
         return $this->json($eventService->getList($filterModel, $user));
     }
 }
