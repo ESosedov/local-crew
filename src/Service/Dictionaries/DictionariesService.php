@@ -20,13 +20,6 @@ class DictionariesService
 
     private function getEventCategories(): array
     {
-        $qb = $this->categoryRepository->createQueryBuilder('eventCategory');
-        $qb
-            ->select('CAST(eventCategory.id AS string) AS id')
-            ->addSelect('eventCategory.title AS title');
-
-        $result = $qb->getQuery()->getArrayResult();
-
-        return array_column($result, 'title', 'id');
+        return $this->categoryRepository->getAllTitlesById();
     }
 }

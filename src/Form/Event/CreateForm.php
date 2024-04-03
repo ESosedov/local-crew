@@ -5,6 +5,7 @@ namespace App\Form\Event;
 use App\Entity\Event;
 use App\Form\ApiForm;
 use App\Model\Event\CreateEventModel;
+use App\Validator\EventCategory\EventCategoryConstraint;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
@@ -14,7 +15,6 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\All;
-use Symfony\Component\Validator\Constraints\Choice;
 use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotNull;
@@ -34,6 +34,9 @@ class CreateForm extends ApiForm
             ])
             ->add('date', DateTimeType::class, [
                 'widget' => 'single_text',
+                'constraints' => [
+                    new NotNull(),
+                ],
             ])
             ->add('type', ChoiceType::class, [
                 'choices' => [Event::TYPE_ONLINE],
@@ -44,13 +47,18 @@ class CreateForm extends ApiForm
                 'constraints' => [
                     new Count(['min' => 1]),
                     new All([
-                        new Choice(['choices' => ['5f0bed14-cb24-41b9-bc5d-8a74a4085caa', '5f0bed14-cb24-41b9-bc5d-8a74a4085abc']]),
+                        new NotNull(),
                     ]),
-                    ],
+                    new EventCategoryConstraint(),
+                ],
             ])
             ->add('participationTerms', TextType::class)
             ->add('details', TextType::class)
-            ->add('avatar', FileType::class)
+            ->add('avatar', FileType::class, [
+                'constraints' => [
+                    new NotNull(),
+                ],
+            ])
             ->add('countMembersMax', IntegerType::class);
     }
 

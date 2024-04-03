@@ -34,4 +34,26 @@ class CategoryRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    public function getAllTitlesById(): array
+    {
+        $qb = $this->createQueryBuilder('category');
+        $qb
+            ->select('CAST(category.id AS string) AS id')
+            ->addSelect('category.title AS title');
+
+        $result = $qb->getQuery()->getArrayResult();
+
+        return array_column($result, 'title', 'id');
+    }
+
+    public function getAllIds(): array
+    {
+        $qb = $this->createQueryBuilder('category');
+        $qb->select('CAST(category.id AS string) AS id');
+
+        $result = $qb->getQuery()->getArrayResult();
+
+        return array_column($result, 'id');
+    }
 }

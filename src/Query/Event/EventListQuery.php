@@ -24,6 +24,7 @@ class EventListQuery
         $qb
             ->select('event')
             ->addSelect('event.date AS HIDDEN date')
+            ->addSelect('event.createdAt AS HIDDEN createdAt')
             ->orderBy($filterModel->getOrderBy(), $filterModel->getOrderDirection())
             ->setFirstResult(($filterModel->getPage() - 1) * $filterModel->getItemsPerPage())
             ->setMaxResults($filterModel->getItemsPerPage());
