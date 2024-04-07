@@ -6,6 +6,7 @@ use App\Attribute\RequestBody;
 use App\Controller\Api\ApiController;
 use App\Model\PushToken\UpdatePushTokenModel;
 use App\Service\PushToken\PushTokenService;
+use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\JsonResponse;
