@@ -38,8 +38,10 @@ class SignUpService
             ->setInfo($signUpModel->getAbout());
 
         $user->setPassword($this->userPasswordHasher->hashPassword($user, $signUpModel->getPassword()));
-        $city = $this->cityService->getCity($signUpModel->getCity());
-        $user->setCity($city);
+        if (null !== $signUpModel->getCity()) {
+            $city = $this->cityService->getCity($signUpModel->getCity());
+            $user->setCity($city);
+        }
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();

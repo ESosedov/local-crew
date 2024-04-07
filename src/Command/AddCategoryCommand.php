@@ -13,10 +13,12 @@ class AddCategoryCommand extends Command
 {
     protected static $defaultName = 'once:add-event-category';
     protected static $defaultDescription = 'Add category';
+
     public function __construct(private EntityManagerInterface $entityManager)
     {
         parent::__construct();
     }
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $categoriesTitle = ['Отдых без Данила'];

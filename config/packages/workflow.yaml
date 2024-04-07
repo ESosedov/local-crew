@@ -1,0 +1,21 @@
+framework:
+    workflows:
+        event_request:
+            type: state_machine
+            marking_store:
+                type: method
+                property: status
+            supports:
+                - App\Entity\EventRequest
+            initial_marking: !php/const App\Entity\EventRequest::STATUS_NEW
+            places:
+              - !php/const App\Entity\EventRequest::STATUS_NEW
+              - !php/const App\Entity\EventRequest::STATUS_APPROVED
+              - !php/const App\Entity\EventRequest::STATUS_REJECT
+            transitions:
+                submit:
+                    from: !php/const App\Entity\EventRequest::STATUS_NEW
+                    to: !php/const App\Entity\EventRequest::STATUS_APPROVED
+                reject:
+                    from: !php/const App\Entity\EventRequest::STATUS_NEW
+                    to: !php/const App\Entity\EventRequest::STATUS_REJECT

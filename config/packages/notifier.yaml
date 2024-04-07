@@ -1,0 +1,6 @@
+framework:
+    notifier:
+        texter_transports:
+            expo: '%env(EXPO_DSN)%'
+        channel_policy:
+            high: ['expo']

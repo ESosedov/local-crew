@@ -11,6 +11,7 @@ use App\Model\Event\EventResponseModel;
 use App\Model\Event\ListFilterModel;
 use App\Model\Event\ResponseListModel;
 use App\Service\Event\EventService;
+use App\Service\EventRequestService\EventRequestService;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use OpenApi\Annotations as OA;
@@ -84,5 +85,27 @@ class EventController extends ApiController
         $user = $this->getUser();
 
         return $this->json($eventService->getList($filterModel, $user));
+    }
+
+    // todo:: add resolve entity
+    /**
+     * @OA\Response(
+     *      response=200,
+     *      description="Success request for participation",
+     *  )
+     *
+     * @OA\Tag(name="Event")
+     *
+     * @Security(name="Bearer")
+     */
+    #[Route(path: '/api/v1/event/{id}/request/participation', requirements: ['id' => '%routing.uuid_regexp%'], methods: ['GET'])]
+    public function requestParticipation(
+        string $id,
+        EventRequestService $eventRequestService,
+    ): JsonResponse {
+        $user = $this->getUser();
+        $eventRequestService->create($id, $user);
+
+        return $this->emptyResponse();
     }
 }
