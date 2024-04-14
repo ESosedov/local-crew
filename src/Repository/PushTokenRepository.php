@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\PushToken;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -26,5 +27,16 @@ class PushTokenRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function removeByUser(User $user): void
+    {
+        $qb = $this->createQueryBuilder('pushToken');
+        $qb
+            ->delete()
+            ->where('pushToken.user = :user')
+            ->setParameter('user', $user);
+
+        $qb->getQuery()->execute();
     }
 }

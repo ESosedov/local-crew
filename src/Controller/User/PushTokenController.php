@@ -12,7 +12,7 @@ use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-class UpdatePushTokenController extends ApiController
+class PushTokenController extends ApiController
 {
     /**
      * @OA\Parameter(
@@ -38,6 +38,25 @@ class UpdatePushTokenController extends ApiController
     ): JsonResponse {
         $user = $this->getUser();
         $pushTokenService->update($user, $model);
+
+        return $this->emptyResponse();
+    }
+
+    /**
+     * @OA\Response(
+     *      response=200,
+     *      description="Push token has been deleted",
+     *  )
+     *
+     * @OA\Tag(name="User")
+     *
+     * @Security(name="Bearer")
+     */
+    #[Route('/api/v1/user/push-token/delete', methods: ['DELETE'])]
+    public function delete(PushTokenService $pushTokenService): JsonResponse
+    {
+        $user = $this->getUser();
+        $pushTokenService->delete($user);
 
         return $this->emptyResponse();
     }
