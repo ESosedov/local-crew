@@ -2,7 +2,7 @@
 
 namespace App\Model\User;
 
-class PublicModel
+class UserPublicModel
 {
     public function __construct(
         private string $id,

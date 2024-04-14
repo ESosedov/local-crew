@@ -5,15 +5,15 @@ namespace App\Model\Event\Factory;
 use App\Entity\Event;
 use App\Entity\User;
 use App\Model\Event\EventResponseModel;
-use App\Model\User\Factory\ShortModelFactory;
-use App\Model\User\PublicModel;
+use App\Model\User\Factory\UserPublicModelFactory;
+use App\Model\User\UserPublicModel;
 use App\Repository\EventMemberRepository;
 
 class EventResponseModelFactory
 {
     public function __construct(
         private EventMemberRepository $eventMemberRepository,
-        private ShortModelFactory $userShortModelFactory,
+        private UserPublicModelFactory $userPublicModelFactory,
     ) {
     }
 
@@ -27,7 +27,7 @@ class EventResponseModelFactory
         foreach ($eventMembers as $eventMember) {
             $user = $eventMember->getUser();
             if (true === $eventMember->isOrganizer()) {
-                $organizerModel = new PublicModel(
+                $organizerModel = new UserPublicModel(
                     $user->getId(),
                     $user->getName(),
                     $user->getAvatar()?->getUrl(),
@@ -52,8 +52,8 @@ class EventResponseModelFactory
             $categoriesIds[] = $category->getId();
         }
 
-        $memberModels = $this->userShortModelFactory->fromUsers($members);
-        $candidateModels = $this->userShortModelFactory->fromUsers($candidates);
+        $memberModels = $this->userPublicModelFactory->fromUsers($members);
+        $candidateModels = $this->userPublicModelFactory->fromUsers($candidates);
 
         return new EventResponseModel(
             $event->getId(),

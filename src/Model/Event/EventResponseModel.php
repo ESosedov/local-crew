@@ -2,8 +2,7 @@
 
 namespace App\Model\Event;
 
-use App\Model\User\PublicModel;
-use App\Model\User\ShortModel;
+use App\Model\User\UserPublicModel;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 
 class EventResponseModel
@@ -16,10 +15,10 @@ class EventResponseModel
         private string|null $participationTerms,
         private string|null $details,
         private string|null $avatar,
-        private PublicModel $organizer,
-        /** @var ShortModel[] */
+        private UserPublicModel $organizer,
+        /** @var UserPublicModel[] */
         private array $members,
-        /** @var ShortModel[] */
+        /** @var UserPublicModel[] */
         private array $candidates,
         private int|null $countMembersMax,
         /** @var string[] */
@@ -63,7 +62,7 @@ class EventResponseModel
         return $this->avatar;
     }
 
-    public function getOrganizer(): PublicModel
+    public function getOrganizer(): UserPublicModel
     {
         return $this->organizer;
     }
