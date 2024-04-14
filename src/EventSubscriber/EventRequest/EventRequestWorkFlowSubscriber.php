@@ -3,9 +3,10 @@
 namespace App\EventSubscriber\EventRequest;
 
 use App\Entity\EventRequest;
+use App\Notification\Push\EventRequestNotification;
 use App\Repository\EventMemberRepository;
 use App\Service\Event\EventMemberService;
-use App\Service\Notification\Push\PushNotificationService;
+use App\Service\Notification\MessageSender;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Workflow\Event\Event;
 
@@ -14,7 +15,7 @@ class EventRequestWorkFlowSubscriber implements EventSubscriberInterface
     public function __construct(
         private EventMemberRepository $eventMemberRepository,
         private EventMemberService $eventMemberService,
-        private PushNotificationService $pushNotificationService,
+        private MessageSender $messageSender,
     ) {
     }
 
@@ -48,9 +49,15 @@ class EventRequestWorkFlowSubscriber implements EventSubscriberInterface
 
         $this->eventMemberService->createCandidate($eventEntity, $user);
         $organizer = $this->eventMemberService->getOrganizer($eventEntity);
-        $subject = 'Запрос на участие 👋';
         $context = sprintf('%s хочет участвовать в %s', $user->getName(), $eventEntity->getTitle());
-        $this->pushNotificationService->send($organizer, $subject, $context);
+
+        $notification = new EventRequestNotification(
+            $organizer->getId(),
+            $context,
+            $eventEntity->getId(),
+            $user->getId(),
+        );
+        $this->messageSender->sentNotification($notification);
     }
 
     public function onReject(): void

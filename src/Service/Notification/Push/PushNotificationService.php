@@ -20,12 +20,12 @@ class PushNotificationService implements NotificationServiceInterface
     /**
      * @throws TransportExceptionInterface
      */
-    public function send(User $user, string $subject, string $context): void
+    public function send(User|string $user, string $subject, string $context): ?string
     {
         $token = $this->pushTokenService->get($user);
         $options = new ExpoOptions($token);
         $push = new PushMessage($subject, $context, $options);
-        // todo::
-        $message = $this->texter->send($push);
+
+        return $this->texter->send($push)?->getMessageId();
     }
 }
