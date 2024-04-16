@@ -8,7 +8,6 @@ use App\Model\User\EmailModel;
 use App\Model\User\UpdateModel;
 use App\Service\User\CheckEmailService;
 use Nelmio\ApiDocBundle\Annotation\Model;
-use Nelmio\ApiDocBundle\Annotation\Security;
 use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,7 +22,7 @@ class CheckEmailController extends ApiController
      *     description="Email is available",
      *     )
      *
-     * @Security(name="Bearer")
+     * @OA\Tag(name="User")
      */
     #[Route(path: '/api/v1/email/check', methods: ['POST'])]
     public function update(

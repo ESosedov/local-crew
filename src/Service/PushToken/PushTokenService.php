@@ -27,7 +27,7 @@ class PushTokenService
         $this->pushTokenRepository->save($token, true);
     }
 
-    public function get(User|string $user): string
+    public function get(User|string $user): ?string
     {
         return $this->pushTokenRepository->findOneBy(['user' => $user])?->getToken();
     }
