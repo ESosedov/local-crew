@@ -2,6 +2,7 @@
 
 namespace App\Model\Event;
 
+use App\Model\File\FileModel;
 use App\Model\User\UserPublicModel;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 
@@ -14,7 +15,7 @@ class EventResponseModel
         private string $type,
         private string|null $participationTerms,
         private string|null $details,
-        private string|null $avatar,
+        private FileModel|null $avatar,
         private UserPublicModel $organizer,
         /** @var UserPublicModel[] */
         private array $members,
@@ -57,7 +58,7 @@ class EventResponseModel
         return $this->details;
     }
 
-    public function getAvatar(): ?string
+    public function getAvatar(): ?FileModel
     {
         return $this->avatar;
     }

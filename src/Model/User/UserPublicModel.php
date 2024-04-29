@@ -2,12 +2,14 @@
 
 namespace App\Model\User;
 
+use App\Model\File\FileModel;
+
 class UserPublicModel
 {
     public function __construct(
         private string $id,
         private ?string $name,
-        private ?string $avatar,
+        private FileModel|null $avatar,
         private ?string $about,
         private \DateTimeInterface $registrationDate,
         private ?int $age,
@@ -25,7 +27,7 @@ class UserPublicModel
         return $this->name;
     }
 
-    public function getAvatar(): ?string
+    public function getAvatar(): ?FileModel
     {
         return $this->avatar;
     }

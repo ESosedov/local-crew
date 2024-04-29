@@ -11,8 +11,10 @@ use App\Model\Event\ListFilterModel;
 use App\Model\Event\ResponseListModel;
 use App\Query\Event\EventListQuery;
 use App\Repository\CategoryRepository;
+use App\Repository\EventRepository;
 use App\Service\File\FileService;
 use Doctrine\ORM\EntityManagerInterface;
+use RuntimeException;
 
 class EventService
 {
@@ -23,6 +25,7 @@ class EventService
         private EventResponseModelFactory $eventResponseModelFactory,
         private EventListQuery $eventListQuery,
         private CategoryRepository $categoryRepository,
+        private EventRepository $eventRepository,
     ) {
     }
 
@@ -63,5 +66,15 @@ class EventService
         $eventsModels = $this->eventResponseModelFactory->fromEvents($listData, $user);
 
         return new ResponseListModel($eventsModels, $countList);
+    }
+
+    public function getById(string $id, User $user): EventResponseModel
+    {
+        $event = $this->eventRepository->find($id);
+        if (null === $event) {
+            throw new RuntimeException('Event not fained');
+        }
+
+        return $this->eventResponseModelFactory->fromEvent($event, $user);
     }
 }

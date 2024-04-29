@@ -108,4 +108,26 @@ class EventController extends ApiController
 
         return $this->emptyResponse();
     }
+
+    /**
+     * @OA\Response(
+     *      response=200,
+     *      description="Returns event by id",
+     *
+     *      @Model(type=EventResponseModel::class)
+     *  )
+     *
+     * @OA\Tag(name="Event")
+     *
+     * @Security(name="Bearer")
+     */
+    #[Route(path: '/api/v1/event/{id}', requirements: ['id' => '%routing.uuid_regexp%'], methods: ['GET'])]
+    public function getById(
+        string $id,
+        EventService $eventService,
+    ): JsonResponse {
+        $user = $this->getUser();
+
+        return $this->json($eventService->getById($id, $user));
+    }
 }

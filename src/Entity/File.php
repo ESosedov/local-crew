@@ -17,6 +17,9 @@ class File extends AbstractBaseUuidEntity
     #[ORM\Column(type: 'string', length: 512, nullable: false, options: ['comment' => 'url'])]
     private string $url;
 
+    #[ORM\Column(type: 'string', length: 50, nullable: true)]
+    private string $extension;
+
     public function getExternalId(): string
     {
         return $this->externalId;
@@ -37,6 +40,18 @@ class File extends AbstractBaseUuidEntity
     public function setUrl(string $url): self
     {
         $this->url = $url;
+
+        return $this;
+    }
+
+    public function getExtension(): string
+    {
+        return $this->extension;
+    }
+
+    public function setExtension(string $extension): self
+    {
+        $this->extension = $extension;
 
         return $this;
     }

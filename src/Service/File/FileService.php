@@ -3,54 +3,43 @@
 namespace App\Service\File;
 
 use App\Entity\File;
-use Cloudinary\Api\Upload\UploadApi;
-use Cloudinary\Configuration\Configuration;
-use Doctrine\ORM\EntityManagerInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class FileService
 {
+    public const IMAGE_SIZE_SMALL = 'small';
+    public const IMAGE_SIZE_MEDIUM = 'medium';
+    public const IMAGE_SIZE_LARGE = 'large';
+
     public function __construct(
         private string $uploadDir,
-        private EntityManagerInterface $entityManager,
+        private FileStorageInterface $storage,
     ) {
     }
 
     public function uploadFile(UploadedFile $file): File
     {
-        $extention = $file->guessExtension();
-        if (null === $extention) {
-            throw new \Exception();
+        $extension = $file->guessExtension();
+        if (null === $extension) {
+            throw new \RuntimeException();
         }
 
-        $uniqueName = Uuid::uuid4()->toString().'.'.$extention;
+        $uniqueName = Uuid::uuid4()->toString().'.'.$extension;
         $uploadPath = $this->uploadDir.DIRECTORY_SEPARATOR.'foto';
         $fullPath = $uploadPath.DIRECTORY_SEPARATOR.$uniqueName;
-
         $file->move($uploadPath, $uniqueName);
 
-        $api = new UploadApi(new Configuration($_ENV['CLOUDINARY_URL']));
-        $uploaded = $api->upload($fullPath);
-        unlink($fullPath);
-
-        $fileEntity = new File();
-        $fileEntity
-            ->setExternalId($uploaded['public_id'])
-            ->setUrl($uploaded['secure_url']);
-
-        $this->entityManager->persist($fileEntity);
-        $this->entityManager->flush();
-
-        return $fileEntity;
+        return $this->storage->put($fullPath);
     }
 
     public function removeFile(File $file): void
     {
-        $api = new UploadApi(new Configuration($_ENV['CLOUDINARY_URL']));
-        $api->destroy($file->getExternalId());
+        $this->storage->remove($file);
+    }
 
-        $this->entityManager->remove($file);
-        $this->entityManager->flush();
+    public function generateDownloadUrl(File $file, string $size): string
+    {
+        return $this->storage->generateDownloadUrl($file, $size);
     }
 }

@@ -5,8 +5,8 @@ namespace App\Model\Event\Factory;
 use App\Entity\Event;
 use App\Entity\User;
 use App\Model\Event\EventResponseModel;
+use App\Model\File\Factory\FileModelFactory;
 use App\Model\User\Factory\UserPublicModelFactory;
-use App\Model\User\UserPublicModel;
 use App\Repository\EventMemberRepository;
 
 class EventResponseModelFactory
@@ -14,6 +14,7 @@ class EventResponseModelFactory
     public function __construct(
         private EventMemberRepository $eventMemberRepository,
         private UserPublicModelFactory $userPublicModelFactory,
+        private FileModelFactory $fileModelFactory,
     ) {
     }
 
@@ -27,15 +28,7 @@ class EventResponseModelFactory
         foreach ($eventMembers as $eventMember) {
             $user = $eventMember->getUser();
             if (true === $eventMember->isOrganizer()) {
-                $organizerModel = new UserPublicModel(
-                    $user->getId(),
-                    $user->getName(),
-                    $user->getAvatar()?->getUrl(),
-                    $user->getInfo(),
-                    $user->getCreatedAt(),
-                    $user->getAge(),
-                    $user->getGender(),
-                );
+                $organizerModel = $this->userPublicModelFactory->fromUser($eventMember);
             }
             if ($user === $currentUser) {
                 $isFavoriteForCurrentUser = $eventMember->isFavorite();
@@ -55,6 +48,8 @@ class EventResponseModelFactory
         $memberModels = $this->userPublicModelFactory->fromUsers($members);
         $candidateModels = $this->userPublicModelFactory->fromUsers($candidates);
 
+        $avatar = $this->fileModelFactory->fromFile($event->getAvatar());
+
         return new EventResponseModel(
             $event->getId(),
             $event->getTitle(),
@@ -62,7 +57,7 @@ class EventResponseModelFactory
             $event->getType(),
             $event->getParticipationTerms(),
             $event->getDetails(),
-            $event->getAvatar()?->getUrl(),
+            $avatar,
             $organizerModel,
             $memberModels,
             $candidateModels,

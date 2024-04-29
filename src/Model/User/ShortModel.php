@@ -2,12 +2,14 @@
 
 namespace App\Model\User;
 
+use App\Model\File\FileModel;
+
 class ShortModel
 {
     public function __construct(
         private string $id,
-        private ?string $name,
-        private ?string $avatar,
+        private string|null $name,
+        private FileModel|null $avatar,
     ) {
     }
 
@@ -21,7 +23,7 @@ class ShortModel
         return $this->name;
     }
 
-    public function getAvatar(): ?string
+    public function getAvatar(): ?FileModel
     {
         return $this->avatar;
     }
