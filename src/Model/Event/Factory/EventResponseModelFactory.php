@@ -23,12 +23,12 @@ class EventResponseModelFactory
         $members = [];
         $candidates = [];
         $isFavoriteForCurrentUser = false;
-        $organizerModel = null;
+        $organizerUserModel = null;
         $eventMembers = $this->eventMemberRepository->findBy(['event' => $event->getId()]);
         foreach ($eventMembers as $eventMember) {
             $user = $eventMember->getUser();
             if (true === $eventMember->isOrganizer()) {
-                $organizerModel = $this->userPublicModelFactory->fromUser($eventMember);
+                $organizerUserModel = $this->userPublicModelFactory->fromUser($eventMember->getUser());
             }
             if ($user === $currentUser) {
                 $isFavoriteForCurrentUser = $eventMember->isFavorite();
@@ -58,7 +58,7 @@ class EventResponseModelFactory
             $event->getParticipationTerms(),
             $event->getDetails(),
             $avatar,
-            $organizerModel,
+            $organizerUserModel,
             $memberModels,
             $candidateModels,
             $event->getCountMembersMax(),
