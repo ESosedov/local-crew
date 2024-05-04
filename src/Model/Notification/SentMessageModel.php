@@ -11,6 +11,8 @@ class SentMessageModel
         private string $body,
         private UserPublicModel $sentBy,
         private \DateTimeInterface $sentAt,
+        private string $type,
+        private string $eventId,
     ) {
     }
 
@@ -32,5 +34,15 @@ class SentMessageModel
     public function getSentAt(): \DateTimeInterface
     {
         return $this->sentAt;
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    public function getEventId(): string
+    {
+        return $this->eventId;
     }
 }

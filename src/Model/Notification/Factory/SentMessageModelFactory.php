@@ -21,6 +21,8 @@ class SentMessageModelFactory
             $sentMessage->getMessage(),
             $sentBy,
             $sentMessage->getCreatedAt(),
+            $sentMessage->getType(),
+            $sentMessage->getEvent()->getId(),
         );
     }
 
