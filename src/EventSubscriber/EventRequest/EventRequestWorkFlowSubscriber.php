@@ -3,7 +3,9 @@
 namespace App\EventSubscriber\EventRequest;
 
 use App\Entity\EventRequest;
+use App\Notification\Push\ApprovedEventRequestNotification;
 use App\Notification\Push\EventRequestNotification;
+use App\Notification\Push\RejectedEventRequestNotification;
 use App\Repository\EventMemberRepository;
 use App\Service\Event\EventMemberService;
 use App\Service\Notification\MessageSender;
@@ -23,18 +25,18 @@ class EventRequestWorkFlowSubscriber implements EventSubscriberInterface
     {
         return [
             'workflow.event_request.entered.new' => 'onEnteredNew',
-            'workflow.event_request.transition.submit' => 'onSubmit',
+            'workflow.event_request.transition.approve' => 'onApprove',
             'workflow.event_request.transition.reject' => 'onReject',
-            'workflow.event_request.guard.submit' => 'guardSubmit',
+            'workflow.event_request.guard.approve' => 'guardApprove',
         ];
     }
 
-    public function guardSubmit(Event $event): void
+    public function guardApprove(Event $event): void
     {
         /** @var EventRequest $subject */
         $subject = $event->getSubject();
         $eventEntity = $subject->getEvent();
-        $count = $this->eventMemberRepository->getCountApproved($eventEntity);
+        $count = $this->eventMemberRepository->getCount($eventEntity);
         if ($count >= $eventEntity->getCountMembersMax()) {
             $event->setBlocked(true, 'Превышено допустимое количество участников');
         }
@@ -47,7 +49,6 @@ class EventRequestWorkFlowSubscriber implements EventSubscriberInterface
         $eventEntity = $subject->getEvent();
         $user = $subject->getCreatedBy();
 
-        $this->eventMemberService->createCandidate($eventEntity, $user);
         $organizer = $this->eventMemberService->getOrganizer($eventEntity);
         $context = sprintf('%s хочет участвовать в %s', $user->getName(), $eventEntity->getTitle());
 
@@ -60,16 +61,43 @@ class EventRequestWorkFlowSubscriber implements EventSubscriberInterface
         $this->messageSender->sentNotification($notification);
     }
 
-    public function onReject(): void
-    {
-    }
-
-    public function onSubmit(Event $event): void
+    public function onReject(Event $event): void
     {
         /** @var EventRequest $subject */
         $subject = $event->getSubject();
         $eventEntity = $subject->getEvent();
-        $user = $subject->getCreatedAt();
-        $this->eventMemberService->submitCandidate($eventEntity, $user);
+
+        $user = $subject->getCreatedBy();
+        $organizer = $this->eventMemberService->getOrganizer($eventEntity);
+        $context = sprintf('Вам отказа в участии в %s', $eventEntity->getTitle());
+
+        $notification = new RejectedEventRequestNotification(
+            $user->getId(),
+            $context,
+            $eventEntity->getId(),
+            $organizer->getId(),
+        );
+
+        $this->messageSender->sentNotification($notification);
+    }
+
+    public function onApprove(Event $event): void
+    {
+        /** @var EventRequest $subject */
+        $subject = $event->getSubject();
+        $eventEntity = $subject->getEvent();
+        $user = $subject->getCreatedBy();
+        $this->eventMemberService->add($eventEntity, $user);
+
+        $organizer = $this->eventMemberService->getOrganizer($eventEntity);
+        $context = sprintf('Вас добавили в %s', $eventEntity->getTitle());
+
+        $notification = new ApprovedEventRequestNotification(
+            $user->getId(),
+            $context,
+            $eventEntity->getId(),
+            $organizer->getId(),
+        );
+        $this->messageSender->sentNotification($notification);
     }
 }

@@ -13,7 +13,7 @@ framework:
               - !php/const App\Entity\EventRequest::STATUS_APPROVED
               - !php/const App\Entity\EventRequest::STATUS_REJECT
             transitions:
-                submit:
+                approve:
                     from: !php/const App\Entity\EventRequest::STATUS_NEW
                     to: !php/const App\Entity\EventRequest::STATUS_APPROVED
                 reject:

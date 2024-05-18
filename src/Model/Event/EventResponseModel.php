@@ -3,6 +3,7 @@
 namespace App\Model\Event;
 
 use App\Model\File\FileModel;
+use App\Model\User\CandidateModel;
 use App\Model\User\UserPublicModel;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 
@@ -19,7 +20,7 @@ class EventResponseModel
         private UserPublicModel $organizer,
         /** @var UserPublicModel[] */
         private array $members,
-        /** @var UserPublicModel[] */
+        /** @var CandidateModel[] */
         private array $candidates,
         private int|null $countMembersMax,
         /** @var string[] */

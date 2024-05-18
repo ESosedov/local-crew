@@ -27,16 +27,14 @@ class EventMemberRepository extends ServiceEntityRepository
      * @throws NonUniqueResultException
      * @throws NoResultException
      */
-    public function getCountApproved(Event $event): int
+    public function getCount(Event $event): int
     {
         $qb = $this->createQueryBuilder('eventMember');
         $qb
-            ->select('COUNT(eventMember.id')
+            ->select('count(eventMember)')
             ->where('eventMember.event = :event')
-            ->andWhere('eventMember.isApproved = :isApproved')
             ->setParameters([
                 'event' => $event,
-                'isApproved' => true,
             ])
             ->setMaxResults(1);
 

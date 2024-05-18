@@ -6,8 +6,10 @@ use App\Entity\Event;
 use App\Entity\User;
 use App\Model\Event\EventResponseModel;
 use App\Model\File\Factory\FileModelFactory;
+use App\Model\User\Factory\CandidateModelFactory;
 use App\Model\User\Factory\UserPublicModelFactory;
 use App\Repository\EventMemberRepository;
+use App\Repository\EventRequestRepository;
 
 class EventResponseModelFactory
 {
@@ -15,38 +17,33 @@ class EventResponseModelFactory
         private EventMemberRepository $eventMemberRepository,
         private UserPublicModelFactory $userPublicModelFactory,
         private FileModelFactory $fileModelFactory,
+        private EventRequestRepository $eventRequestRepository,
+        private CandidateModelFactory $candidateModelFactory,
     ) {
     }
 
     public function fromEvent(Event $event, User|null $currentUser): EventResponseModel
     {
-        $members = [];
-        $candidates = [];
+        // todo:: add Likes
         $isFavoriteForCurrentUser = false;
         $organizerUserModel = null;
+        $members = [];
         $eventMembers = $this->eventMemberRepository->findBy(['event' => $event->getId()]);
         foreach ($eventMembers as $eventMember) {
-            $user = $eventMember->getUser();
             if (true === $eventMember->isOrganizer()) {
                 $organizerUserModel = $this->userPublicModelFactory->fromUser($eventMember->getUser());
             }
-            if ($user === $currentUser) {
-                $isFavoriteForCurrentUser = $eventMember->isFavorite();
-            }
-            if (true === $eventMember->isApproved()) {
-                $members[] = $user;
-            } else {
-                $candidates[] = $user;
-            }
+            $members[] = $eventMember->getUser();
         }
         $categoriesIds = [];
         $categories = $event->getCategories();
         foreach ($categories as $category) {
             $categoriesIds[] = $category->getId();
         }
+        $candidates = $this->eventRequestRepository->getNewByEvent($event);
 
         $memberModels = $this->userPublicModelFactory->fromUsers($members);
-        $candidateModels = $this->userPublicModelFactory->fromUsers($candidates);
+        $candidateModels = $this->candidateModelFactory->fromEventRequests($candidates);
 
         $avatar = $this->fileModelFactory->fromFile($event->getAvatar());
 

@@ -21,13 +21,13 @@ class EventMember extends AbstractBaseUuidEntity
     #[ORM\Column(type: 'boolean', nullable: false)]
     private bool $isOrganizer;
 
-    #[ORM\Column(type: 'boolean', nullable: false)]
+    #[ORM\Column(type: 'boolean', nullable: true)]
     private bool $isApproved;
 
-    #[ORM\Column(type: 'boolean', nullable: false)]
+    #[ORM\Column(type: 'boolean', nullable: true)]
     private bool $isMember;
 
-    #[ORM\Column(type: 'boolean', nullable: false)]
+    #[ORM\Column(type: 'boolean', nullable: true)]
     private bool $isFavorite;
 
     public function getEvent(): Event

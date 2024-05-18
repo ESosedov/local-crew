@@ -87,7 +87,6 @@ class EventController extends ApiController
         return $this->json($eventService->getList($filterModel, $user));
     }
 
-    // todo:: add resolve entity
     /**
      * @OA\Response(
      *      response=200,

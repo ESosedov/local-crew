@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Event;
 use App\Entity\EventRequest;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -26,5 +27,24 @@ class EventRequestRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    /**
+     * @return EventRequest[]
+     */
+    public function getNewByEvent(Event|string $event): array
+    {
+        $qb = $this->createQueryBuilder('eventRequest');
+        $qb
+            ->select('eventRequest')
+            ->innerJoin('eventRequest.createdBy', 'user')
+            ->where('eventRequest.event = :event')
+            ->andWhere('eventRequest.status = :new')
+            ->setParameters([
+                'event' => $event,
+                'new' => EventRequest::STATUS_NEW,
+            ]);
+
+        return $qb->getQuery()->getResult();
     }
 }

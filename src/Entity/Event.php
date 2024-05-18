@@ -2,17 +2,19 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\CreatedTrait;
+use App\Entity\Traits\UpdatedTrait;
 use App\Repository\EventRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
 #[ORM\Table(name: 'events')]
 class Event extends AbstractBaseUuidEntity
 {
-    use TimestampableEntity;
+    use CreatedTrait;
+    use UpdatedTrait;
 
     public const TYPE_ONLINE = 'online';
     public const TYPE_OFFLINE = 'offline';

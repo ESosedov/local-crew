@@ -44,6 +44,7 @@ class EventService
             ->setParticipationTerms($createEventModel->getParticipationTerms())
             ->setDetails($createEventModel->getDetails())
             ->setAvatar($avatar)
+            ->setCreatedBy($user)
             ->setCountMembersMax($createEventModel->getCountMembersMax());
 
         $categories = $this->categoryRepository->getByIds($createEventModel->getCategories());

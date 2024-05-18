@@ -2,7 +2,6 @@
 
 namespace App\Validator\Entity;
 
-
 use Attribute;
 use Symfony\Component\Validator\Constraint;
 

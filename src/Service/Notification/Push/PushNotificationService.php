@@ -28,7 +28,7 @@ class PushNotificationService implements NotificationServiceInterface
             return null;
         }
 
-        $options = new ExpoOptions($token);
+        $options = new ExpoOptions(to: $token, data: ['url' => 'main/notifications/notificationsList']);
         $push = new PushMessage($subject, $context, $options);
 
         return $this->texter->send($push)?->getMessageId();
