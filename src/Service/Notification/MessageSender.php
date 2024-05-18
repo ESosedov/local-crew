@@ -54,6 +54,7 @@ class MessageSender
                 $notification->getMessage(),
                 $messageId,
                 $notification->getCreatedBy(),
+                $notification->getBodyText(),
             );
         } else {
             $this->logger->error('Notification has not been sent', ['notification' => $notification]);

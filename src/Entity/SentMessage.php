@@ -41,6 +41,9 @@ class SentMessage extends AbstractBaseUuidEntity
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private DateTimeInterface|null $noticedAt = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private string|null $bodyText = null;
+
     public function getUser(): User
     {
         return $this->user;
@@ -145,6 +148,18 @@ class SentMessage extends AbstractBaseUuidEntity
     public function setNoticedAt(?DateTimeInterface $noticedAt): self
     {
         $this->noticedAt = $noticedAt;
+
+        return $this;
+    }
+
+    public function getBodyText(): ?string
+    {
+        return $this->bodyText;
+    }
+
+    public function setBodyText(?string $bodyText): self
+    {
+        $this->bodyText = $bodyText;
 
         return $this;
     }

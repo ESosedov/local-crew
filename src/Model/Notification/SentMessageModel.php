@@ -13,6 +13,7 @@ class SentMessageModel
         private \DateTimeInterface $sentAt,
         private string $type,
         private string $eventId,
+        private string|null $bodyText,
     ) {
     }
 
@@ -44,5 +45,10 @@ class SentMessageModel
     public function getEventId(): string
     {
         return $this->eventId;
+    }
+
+    public function getBodyText(): ?string
+    {
+        return $this->bodyText;
     }
 }

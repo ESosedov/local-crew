@@ -13,6 +13,7 @@ abstract class Push extends Notification
         protected string $message,
         private string $eventId,
         private string $createdBy,
+        private string $bodyText,
     ) {
     }
 
@@ -36,5 +37,10 @@ abstract class Push extends Notification
     public function getCreatedBy(): string
     {
         return $this->createdBy;
+    }
+
+    public function getBodyText(): string
+    {
+        return $this->bodyText;
     }
 }

@@ -23,6 +23,7 @@ class SentMessageModelFactory
             $sentMessage->getCreatedAt(),
             $sentMessage->getSource(),
             $sentMessage->getEvent()->getId(),
+            $sentMessage->getBodyText(),
         );
     }
 

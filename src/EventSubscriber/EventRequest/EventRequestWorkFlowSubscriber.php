@@ -50,13 +50,15 @@ class EventRequestWorkFlowSubscriber implements EventSubscriberInterface
         $user = $subject->getCreatedBy();
 
         $organizer = $this->eventMemberService->getOrganizer($eventEntity);
-        $context = sprintf('%s хочет участвовать в %s', $user->getName(), $eventEntity->getTitle());
+        $context = sprintf(EventRequestNotification::CONTEXT_PATTERN, $user->getName(), $eventEntity->getTitle());
+        $bodyText = sprintf(EventRequestNotification::BODY_TEXT_PATTERN, $user->getName(), $eventEntity->getTitle());
 
         $notification = new EventRequestNotification(
             $organizer->getId(),
             $context,
             $eventEntity->getId(),
             $user->getId(),
+            $bodyText,
         );
         $this->messageSender->sentNotification($notification);
     }
@@ -69,13 +71,15 @@ class EventRequestWorkFlowSubscriber implements EventSubscriberInterface
 
         $user = $subject->getCreatedBy();
         $organizer = $this->eventMemberService->getOrganizer($eventEntity);
-        $context = sprintf('Вам отказа в участии в %s', $eventEntity->getTitle());
+        $context = sprintf(RejectedEventRequestNotification::CONTEXT_PATTERN, $eventEntity->getTitle());
+        $bodyText = sprintf(RejectedEventRequestNotification::BODY_TEXT_PATTERN, $eventEntity->getTitle());
 
         $notification = new RejectedEventRequestNotification(
             $user->getId(),
             $context,
             $eventEntity->getId(),
             $organizer->getId(),
+            $bodyText,
         );
 
         $this->messageSender->sentNotification($notification);
@@ -90,13 +94,15 @@ class EventRequestWorkFlowSubscriber implements EventSubscriberInterface
         $this->eventMemberService->add($eventEntity, $user);
 
         $organizer = $this->eventMemberService->getOrganizer($eventEntity);
-        $context = sprintf('Вас добавили в %s', $eventEntity->getTitle());
+        $context = sprintf(ApprovedEventRequestNotification::CONTEXT_PATTERN, $eventEntity->getTitle());
+        $bodyText = sprintf(ApprovedEventRequestNotification::BODY_TEXT_PATTERN, $eventEntity->getTitle());
 
         $notification = new ApprovedEventRequestNotification(
             $user->getId(),
             $context,
             $eventEntity->getId(),
             $organizer->getId(),
+            $bodyText,
         );
         $this->messageSender->sentNotification($notification);
     }

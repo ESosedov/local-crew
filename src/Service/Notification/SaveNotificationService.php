@@ -27,6 +27,7 @@ class SaveNotificationService
         string|null $message,
         string|null $identifier,
         User|string $createdBy,
+        string|null $bodyText,
     ): void {
         if (!$user instanceof User) {
             $user = $this->userRepository->find($user);
@@ -47,7 +48,8 @@ class SaveNotificationService
             ->setTitle($subject)
             ->setMessage($message)
             ->setIdentifier($identifier)
-            ->setCreatedBy($createdBy);
+            ->setCreatedBy($createdBy)
+            ->setBodyText($bodyText);
 
         $this->sentMessageRepository->save($sentMessage, true);
     }
