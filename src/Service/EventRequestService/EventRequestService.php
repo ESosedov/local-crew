@@ -5,6 +5,8 @@ namespace App\Service\EventRequestService;
 use App\Entity\EventRequest;
 use App\Entity\User;
 use App\EventSubscriber\EventRequest\EventRequestWorkFlowSubscriber;
+use App\Model\Event\EventResponseModel;
+use App\Model\Event\Factory\EventResponseModelFactory;
 use App\Repository\EventRepository;
 use App\Repository\EventRequestRepository;
 use Symfony\Component\Workflow\Event\Event as EventNotification;
@@ -19,10 +21,11 @@ class EventRequestService
         private EventRepository $eventRepository,
         private EventRequestWorkFlowSubscriber $eventRequestWorkFlowSubscriber,
         private WorkflowInterface $eventRequestStateMachine,
+        private EventResponseModelFactory $eventResponseModelFactory,
     ) {
     }
 
-    public function create(string $id, User $user): void
+    public function create(string $id, User $user): EventResponseModel
     {
         $event = $this->eventRepository->find($id);
         if (null === $event) {
@@ -40,9 +43,11 @@ class EventRequestService
 
         // Вызываем метод onEnteredNew вручную
         $this->eventRequestWorkFlowSubscriber->onEnteredNew($eventNotification);
+
+        return $this->eventResponseModelFactory->fromEvent($eventRequest->getEvent(), $user);
     }
 
-    public function approve(string $id): void
+    public function approve(string $id, User $user): EventResponseModel
     {
         $eventRequest = $this->eventRequestRepository->find($id);
         if (null === $eventRequest) {
@@ -53,9 +58,11 @@ class EventRequestService
         }
 
         $this->eventRequestRepository->save($eventRequest, true);
+
+        return $this->eventResponseModelFactory->fromEvent($eventRequest->getEvent(), $user);
     }
 
-    public function reject(string $id): void
+    public function reject(string $id, User $user): EventResponseModel
     {
         $eventRequest = $this->eventRequestRepository->find($id);
         if (null === $eventRequest) {
@@ -65,5 +72,7 @@ class EventRequestService
         $this->eventRequestStateMachine->apply($eventRequest, 'reject');
 
         $this->eventRequestRepository->save($eventRequest, true);
+
+        return $this->eventResponseModelFactory->fromEvent($eventRequest->getEvent(), $user);
     }
 }

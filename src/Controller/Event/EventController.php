@@ -91,6 +91,8 @@ class EventController extends ApiController
      * @OA\Response(
      *      response=200,
      *      description="Success request for participation",
+     *
+     *      @Model(type=EventResponseModel::class)
      *  )
      *
      * @OA\Tag(name="Event")
@@ -103,9 +105,8 @@ class EventController extends ApiController
         EventRequestService $eventRequestService,
     ): JsonResponse {
         $user = $this->getUser();
-        $eventRequestService->create($id, $user);
 
-        return $this->emptyResponse();
+        return $this->json($eventRequestService->create($id, $user));
     }
 
     /**
