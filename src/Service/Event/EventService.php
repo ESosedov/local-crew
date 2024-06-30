@@ -71,7 +71,7 @@ class EventService
 
     public function getById(string $id, User $user): EventResponseModel
     {
-        $event = $this->eventRepository->find($id);
+        $event = $this->eventRepository->getOneWithFullInfo($id);
         if (null === $event) {
             throw new RuntimeException('Event not fained');
         }

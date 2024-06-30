@@ -27,7 +27,7 @@ class EventRequestService
 
     public function create(string $id, User $user): EventResponseModel
     {
-        $event = $this->eventRepository->find($id);
+        $event = $this->eventRepository->getOneWithFullInfo($id);
         if (null === $event) {
             throw new RuntimeException('Event not found');
         }
@@ -38,13 +38,15 @@ class EventRequestService
             ->setCreatedBy($user);
 
         $this->eventRequestRepository->save($eventRequest, true);
+        $event->addRequest($eventRequest);
+        $this->eventRepository->save($event);
 
         $eventNotification = new EventNotification($eventRequest, new Marking());
 
         // Вызываем метод onEnteredNew вручную
         $this->eventRequestWorkFlowSubscriber->onEnteredNew($eventNotification);
 
-        return $this->eventResponseModelFactory->fromEvent($eventRequest->getEvent(), $user);
+        return $this->eventResponseModelFactory->fromEvent($event, $user);
     }
 
     public function approve(string $id, User $user): EventResponseModel
@@ -59,7 +61,9 @@ class EventRequestService
 
         $this->eventRequestRepository->save($eventRequest, true);
 
-        return $this->eventResponseModelFactory->fromEvent($eventRequest->getEvent(), $user);
+        $updatedEvent = $this->eventRepository->getOneWithFullInfo($eventRequest->getEvent()->getId());
+
+        return $this->eventResponseModelFactory->fromEvent($updatedEvent, $user);
     }
 
     public function reject(string $id, User $user): EventResponseModel

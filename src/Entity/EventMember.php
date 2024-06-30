@@ -12,7 +12,8 @@ class EventMember extends AbstractBaseUuidEntity
 {
     use TimestampableEntity;
 
-    #[ORM\ManyToOne(targetEntity: Event::class)]
+    #[ORM\ManyToOne(targetEntity: Event::class, inversedBy: 'members')]
+    #[ORM\JoinColumn(nullable: false)]
     private Event $event;
 
     #[ORM\ManyToOne(targetEntity: User::class)]

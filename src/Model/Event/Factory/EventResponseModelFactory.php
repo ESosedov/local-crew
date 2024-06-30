@@ -27,25 +27,48 @@ class EventResponseModelFactory
         // todo:: add Likes
         $isFavoriteForCurrentUser = false;
         $organizerUserModel = null;
+        $isApprovedForCurrentUser = false;
+        $isWaitingForApprovalForCurrentUser = false;
         $members = [];
-        $eventMembers = $this->eventMemberRepository->findBy(['event' => $event->getId()]);
+        // $eventMembers = $this->eventMemberRepository->findBy(['event' => $event->getId()]);
+        $eventMembers = $event->getMembers();
         foreach ($eventMembers as $eventMember) {
             if (true === $eventMember->isOrganizer()) {
                 $organizerUserModel = $this->userPublicModelFactory->fromUser($eventMember->getUser());
             }
             $members[] = $eventMember->getUser();
+            if ($eventMember->getUser() === $currentUser) {
+                $isApprovedForCurrentUser = true;
+            }
         }
         $categoriesIds = [];
         $categories = $event->getCategories();
         foreach ($categories as $category) {
             $categoriesIds[] = $category->getId();
         }
-        $candidates = $this->eventRequestRepository->getNewByEvent($event);
+        // $requests = $this->eventRequestRepository->getNewByEvent($event);
+        $requests = $event->getRequests();
+        foreach ($requests as $request) {
+            if ($request->getCreatedBy() === $currentUser) {
+                $isWaitingForApprovalForCurrentUser = true;
+                break;
+            }
+        }
 
         $memberModels = $this->userPublicModelFactory->fromUsers($members);
-        $candidateModels = $this->candidateModelFactory->fromEventRequests($candidates);
-
+        $candidateModels = $this->candidateModelFactory->fromEventRequests($requests);
+        if (null === $organizerUserModel) {
+            $organizerUserModel = $this->userPublicModelFactory->fromUser($event->getCreatedBy());
+        }
         $avatar = $this->fileModelFactory->fromFile($event->getAvatar());
+
+        // frontend options
+        $frontendOptions = [
+            'isEventReadyToStart' => $eventMembers->count() === $event->getCountMembersMax(),
+            'isApprovedForCurrentUser' => $isApprovedForCurrentUser,
+            'isWaitingForApprovalForCurrentUser' => $isWaitingForApprovalForCurrentUser,
+            'isActiveUserEvent' => $organizerUserModel->getId() === $currentUser?->getId(),
+        ];
 
         return new EventResponseModel(
             $event->getId(),
@@ -61,6 +84,7 @@ class EventResponseModelFactory
             $event->getCountMembersMax(),
             $categoriesIds,
             $isFavoriteForCurrentUser,
+            $frontendOptions,
         );
     }
 

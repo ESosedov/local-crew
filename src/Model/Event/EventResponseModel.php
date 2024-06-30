@@ -26,6 +26,8 @@ class EventResponseModel
         /** @var string[] */
         private array $category,
         private bool $isFavorite,
+        /** @var bool[] */
+        private array $frontendOptions = [],
     ) {
     }
 
@@ -93,5 +95,10 @@ class EventResponseModel
     public function isFavorite(): bool
     {
         return $this->isFavorite;
+    }
+
+    public function getFrontendOptions(): array
+    {
+        return $this->frontendOptions;
     }
 }

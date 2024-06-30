@@ -20,7 +20,8 @@ class EventRequest extends AbstractBaseUuidEntity
     public const STATUS_APPROVED = 'approved';
     public const STATUS_REJECT = 'reject';
 
-    #[ORM\ManyToOne(targetEntity: Event::class)]
+    #[ORM\ManyToOne(targetEntity: Event::class, inversedBy: 'requests')]
+    #[ORM\JoinColumn(nullable: false)]
     private Event $event;
 
     #[ORM\Column(type: 'string', length: 50, nullable: false, options: ['comment' => 'Статус запроса'])]

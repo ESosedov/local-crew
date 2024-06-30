@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20240429212002 extends AbstractMigration
+final class Version20240518184018 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -19,11 +19,13 @@ final class Version20240429212002 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $this->addSql('ALTER TABLE files ADD extension VARCHAR(50) DEFAULT NULL');
+        $this->addSql('CREATE INDEX date_idx ON events (date)');
+        $this->addSql('CREATE INDEX created_at_idx ON events (created_at)');
     }
 
     public function down(Schema $schema): void
     {
-        $this->addSql('ALTER TABLE files DROP extension');
+        $this->addSql('DROP INDEX date_idx');
+        $this->addSql('DROP INDEX created_at_idx');
     }
 }

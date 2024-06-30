@@ -11,6 +11,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
 #[ORM\Table(name: 'events')]
+#[ORM\Index(columns: ['date'], name: 'date_idx')]
+#[ORM\Index(columns: ['created_at'], name: 'created_at_idx')]
 class Event extends AbstractBaseUuidEntity
 {
     use CreatedTrait;
@@ -22,6 +24,8 @@ class Event extends AbstractBaseUuidEntity
     public function __construct()
     {
         $this->categories = new ArrayCollection();
+        $this->members = new ArrayCollection();
+        $this->requests = new ArrayCollection();
     }
 
     #[ORM\Column(type: 'string', length: 255, nullable: false, options: ['comment' => 'Event`s title'])]
@@ -70,6 +74,12 @@ class Event extends AbstractBaseUuidEntity
     #[ORM\JoinColumn(name: 'category_id', referencedColumnName: 'id')]
     #[ORM\InverseJoinColumn(name: 'event_id', referencedColumnName: 'id')]
     private Collection $categories;
+
+    #[ORM\OneToMany(mappedBy: 'event', targetEntity: EventMember::class)]
+    private Collection $members;
+
+    #[ORM\OneToMany(mappedBy: 'event', targetEntity: EventRequest::class)]
+    private Collection $requests;
 
     public function getTitle(): string
     {
@@ -236,6 +246,23 @@ class Event extends AbstractBaseUuidEntity
     {
         if (!$this->categories->contains($category)) {
             $this->categories->add($category);
+        }
+    }
+
+    public function getMembers(): Collection
+    {
+        return $this->members;
+    }
+
+    public function getRequests(): Collection
+    {
+        return $this->requests;
+    }
+
+    public function addRequest(EventRequest $request): void
+    {
+        if (!$this->requests->contains($request)) {
+            $this->requests->add($request);
         }
     }
 }
