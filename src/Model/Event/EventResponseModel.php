@@ -3,6 +3,7 @@
 namespace App\Model\Event;
 
 use App\Model\File\FileModel;
+use App\Model\Location\LocationModel;
 use App\Model\User\CandidateModel;
 use App\Model\User\UserPublicModel;
 use Symfony\Component\Serializer\Annotation\SerializedName;
@@ -13,6 +14,7 @@ class EventResponseModel
         private string $id,
         private string $title,
         private \DateTimeInterface $date,
+        private string $timeZone,
         private string $type,
         private string|null $participationTerms,
         private string|null $details,
@@ -26,6 +28,7 @@ class EventResponseModel
         /** @var string[] */
         private array $category,
         private bool $isFavorite,
+        private LocationModel|null $location = null,
         /** @var bool[] */
         private array $frontendOptions = [],
     ) {
@@ -44,6 +47,11 @@ class EventResponseModel
     public function getDate(): \DateTimeInterface
     {
         return $this->date;
+    }
+
+    public function getTimeZone(): string
+    {
+        return $this->timeZone;
     }
 
     public function getType(): string
@@ -95,6 +103,11 @@ class EventResponseModel
     public function isFavorite(): bool
     {
         return $this->isFavorite;
+    }
+
+    public function getLocation(): ?LocationModel
+    {
+        return $this->location;
     }
 
     public function getFrontendOptions(): array

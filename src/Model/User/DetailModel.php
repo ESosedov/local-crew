@@ -15,7 +15,7 @@ class DetailModel
         private ?string $about,
         private \DateTimeInterface $registrationDate,
         private string $email,
-        private ?int $age,
+        private ?\DateTimeInterface $birthDate,
         private ?string $gender,
         private ?CityModel $city,
         /**
@@ -55,9 +55,9 @@ class DetailModel
         return $this->email;
     }
 
-    public function getAge(): ?int
+    public function getBirthDate(): ?\DateTimeInterface
     {
-        return $this->age;
+        return $this->birthDate;
     }
 
     public function getGender(): ?string

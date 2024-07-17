@@ -3,6 +3,7 @@
 namespace App\Service\Event;
 
 use App\Entity\Event;
+use App\Entity\Location;
 use App\Entity\User;
 use App\Model\Event\CreateEventModel;
 use App\Model\Event\EventResponseModel;
@@ -40,6 +41,7 @@ class EventService
         $event
             ->setTitle($createEventModel->getTitle())
             ->setDate($date)
+            ->setTimeZone($createEventModel->getTimeZone())
             ->setType($createEventModel->getType())
             ->setParticipationTerms($createEventModel->getParticipationTerms())
             ->setDetails($createEventModel->getDetails())
@@ -53,6 +55,20 @@ class EventService
         }
 
         $this->entityManager->persist($event);
+
+        if (Event::TYPE_LOCAL === $createEventModel->getType()) {
+            $location = new Location();
+            $location
+                ->setLatitude($createEventModel->getLatitude())
+                ->setLongitude($createEventModel->getLongitude())
+                ->setCity($createEventModel->getCity())
+                ->setStreet($createEventModel->getStreet())
+                ->setStreetNumber($createEventModel->getStreetNumber())
+                ->setPlaceName($createEventModel->getPlaceName());
+
+            $this->entityManager->persist($location);
+            $event->setLocation($location);
+        }
 
         $this->eventMemberService->addOrganizer($user, $event);
 

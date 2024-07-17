@@ -19,7 +19,7 @@ class Event extends AbstractBaseUuidEntity
     use UpdatedTrait;
 
     public const TYPE_ONLINE = 'online';
-    public const TYPE_OFFLINE = 'offline';
+    public const TYPE_LOCAL = 'local';
 
     public function __construct()
     {
@@ -43,24 +43,9 @@ class Event extends AbstractBaseUuidEntity
     #[ORM\Column(type: 'string', length: 1024, nullable: true, options: ['comment' => 'Детали'])]
     private ?string $details;
 
-    #[ORM\ManyToOne(targetEntity: City::class)]
+    #[ORM\OneToOne(targetEntity: Location::class)]
     #[ORM\JoinColumn(nullable: true)]
-    private City $city;
-
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $street;
-
-    #[ORM\Column(type: 'integer', length: 255, nullable: true)]
-    private ?int $streetNumber;
-
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $placeTitle;
-
-    #[ORM\Column(type: 'float', nullable: true)]
-    private ?float $latitude;
-
-    #[ORM\Column(type: 'float', nullable: true)]
-    private ?float $longitude;
+    private Location|null $location = null;
 
     #[ORM\OneToOne(targetEntity: File::class)]
     #[ORM\JoinColumn(onDelete: 'SET NULL')]
@@ -80,6 +65,9 @@ class Event extends AbstractBaseUuidEntity
 
     #[ORM\OneToMany(mappedBy: 'event', targetEntity: EventRequest::class)]
     private Collection $requests;
+
+    #[ORM\Column(type: 'string', length: 55, nullable: true)]
+    private string|null $timeZone = null;
 
     public function getTitle(): string
     {
@@ -141,74 +129,14 @@ class Event extends AbstractBaseUuidEntity
         return $this;
     }
 
-    public function getCity(): City
+    public function getLocation(): ?Location
     {
-        return $this->city;
+        return $this->location;
     }
 
-    public function setCity(City $city): self
+    public function setLocation(?Location $location): self
     {
-        $this->city = $city;
-
-        return $this;
-    }
-
-    public function getStreet(): ?string
-    {
-        return $this->street;
-    }
-
-    public function setStreet(?string $street): self
-    {
-        $this->street = $street;
-
-        return $this;
-    }
-
-    public function getStreetNumber(): ?int
-    {
-        return $this->streetNumber;
-    }
-
-    public function setStreetNumber(?int $streetNumber): self
-    {
-        $this->streetNumber = $streetNumber;
-
-        return $this;
-    }
-
-    public function getPlaceTitle(): ?string
-    {
-        return $this->placeTitle;
-    }
-
-    public function setPlaceTitle(?string $placeTitle): self
-    {
-        $this->placeTitle = $placeTitle;
-
-        return $this;
-    }
-
-    public function getLatitude(): ?float
-    {
-        return $this->latitude;
-    }
-
-    public function setLatitude(?float $latitude): self
-    {
-        $this->latitude = $latitude;
-
-        return $this;
-    }
-
-    public function getLongitude(): ?float
-    {
-        return $this->longitude;
-    }
-
-    public function setLongitude(?float $longitude): self
-    {
-        $this->longitude = $longitude;
+        $this->location = $location;
 
         return $this;
     }
@@ -264,5 +192,17 @@ class Event extends AbstractBaseUuidEntity
         if (!$this->requests->contains($request)) {
             $this->requests->add($request);
         }
+    }
+
+    public function getTimeZone(): ?string
+    {
+        return $this->timeZone;
+    }
+
+    public function setTimeZone(?string $timeZone): self
+    {
+        $this->timeZone = $timeZone;
+
+        return $this;
     }
 }

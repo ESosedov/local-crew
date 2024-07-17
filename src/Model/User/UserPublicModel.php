@@ -12,7 +12,7 @@ class UserPublicModel
         private FileModel|null $avatar,
         private ?string $about,
         private \DateTimeInterface $registrationDate,
-        private ?int $age,
+        private ?\DateTimeInterface $birthDate,
         private ?string $gender,
     ) {
     }
@@ -42,9 +42,9 @@ class UserPublicModel
         return $this->registrationDate;
     }
 
-    public function getAge(): ?int
+    public function getBirthDate(): ?\DateTimeInterface
     {
-        return $this->age;
+        return $this->birthDate;
     }
 
     public function getGender(): ?string

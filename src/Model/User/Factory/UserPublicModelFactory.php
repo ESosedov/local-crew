@@ -22,7 +22,7 @@ class UserPublicModelFactory
             $avatar,
             $user->getInfo(),
             $user->getCreatedAt(),
-            $user->getAge(),
+            $user->getBirthDate(),
             $user->getGender(),
         );
     }

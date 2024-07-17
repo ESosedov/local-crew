@@ -3,13 +3,14 @@
 namespace App\Model\User;
 
 use App\Model\City\CityModel;
+use DateTimeInterface;
 
 class UpdateModel
 {
     public function __construct(
         private ?string $name,
         private ?string $about,
-        private ?int $age,
+        private ?DateTimeInterface $birthDate,
         private ?string $gender,
         private ?CityModel $city,
         private ?string $avatar,
@@ -26,9 +27,9 @@ class UpdateModel
         return $this->about;
     }
 
-    public function getAge(): ?int
+    public function getBirthDate(): ?DateTimeInterface
     {
-        return $this->age;
+        return $this->birthDate;
     }
 
     public function getGender(): ?string

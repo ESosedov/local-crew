@@ -33,7 +33,7 @@ class SignUpService
         $user
             ->setEmail($signUpModel->getEmail())
             ->setName($signUpModel->getName())
-            ->setAge($signUpModel->getAge())
+            ->setBirthDate($signUpModel->getBirthDate())
             ->setGender($signUpModel->getGender())
             ->setInfo($signUpModel->getAbout());
 

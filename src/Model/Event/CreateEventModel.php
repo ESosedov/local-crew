@@ -8,6 +8,7 @@ class CreateEventModel
 {
     private string $title;
     private \DateTime $date;
+    private string|null $timeZone = null;
     private string $type;
     /**
      * @var string[]
@@ -17,6 +18,12 @@ class CreateEventModel
     private string|null $details = null;
     private UploadedFile|null $avatar = null;
     private int|null $countMembersMax = null;
+    private float|null $latitude = null;
+    private float|null $longitude = null;
+    private string|null $city = null;
+    private string|null $street = null;
+    private string|null $streetNumber = null;
+    private string|null $placeName = null;
 
     public function getTitle(): string
     {
@@ -98,6 +105,90 @@ class CreateEventModel
     public function setCountMembersMax(?int $countMembersMax): self
     {
         $this->countMembersMax = $countMembersMax;
+
+        return $this;
+    }
+
+    public function getTimeZone(): ?string
+    {
+        return $this->timeZone;
+    }
+
+    public function setTimeZone(?string $timeZone): self
+    {
+        $this->timeZone = $timeZone;
+
+        return $this;
+    }
+
+    public function getLatitude(): float
+    {
+        return $this->latitude;
+    }
+
+    public function setLatitude(float $latitude): self
+    {
+        $this->latitude = $latitude;
+
+        return $this;
+    }
+
+    public function getLongitude(): float
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude(float $longitude): self
+    {
+        $this->longitude = $longitude;
+
+        return $this;
+    }
+
+    public function getCity(): string
+    {
+        return $this->city;
+    }
+
+    public function setCity(string $city): self
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    public function getStreet(): string
+    {
+        return $this->street;
+    }
+
+    public function setStreet(string $street): self
+    {
+        $this->street = $street;
+
+        return $this;
+    }
+
+    public function getStreetNumber(): string
+    {
+        return $this->streetNumber;
+    }
+
+    public function setStreetNumber(string $streetNumber): self
+    {
+        $this->streetNumber = $streetNumber;
+
+        return $this;
+    }
+
+    public function getPlaceName(): ?string
+    {
+        return $this->placeName;
+    }
+
+    public function setPlaceName(?string $placeName): self
+    {
+        $this->placeName = $placeName;
 
         return $this;
     }

@@ -23,7 +23,7 @@ class Handler
         $user
             ->setName($updateModel->getName())
             ->setInfo($updateModel->getAbout())
-            ->setAge($updateModel->getAge())
+            ->setBirthDate($updateModel->getBirthDate())
             ->setGender($updateModel->getGender());
 
         $city = $this->cityService->getCity($updateModel->getCity());

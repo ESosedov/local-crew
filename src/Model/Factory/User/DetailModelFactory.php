@@ -34,7 +34,7 @@ class DetailModelFactory
             $user->getInfo(),
             $user->getCreatedAt(),
             $user->getEmail(),
-            $user->getAge(),
+            $user->getBirthDate(),
             $user->getGender(),
             $cityModel,
             [],

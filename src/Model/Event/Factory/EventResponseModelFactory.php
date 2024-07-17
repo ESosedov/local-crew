@@ -6,6 +6,7 @@ use App\Entity\Event;
 use App\Entity\User;
 use App\Model\Event\EventResponseModel;
 use App\Model\File\Factory\FileModelFactory;
+use App\Model\Location\Factory\LocationModelFactory;
 use App\Model\User\Factory\CandidateModelFactory;
 use App\Model\User\Factory\UserPublicModelFactory;
 use App\Repository\EventMemberRepository;
@@ -19,6 +20,7 @@ class EventResponseModelFactory
         private FileModelFactory $fileModelFactory,
         private EventRequestRepository $eventRequestRepository,
         private CandidateModelFactory $candidateModelFactory,
+        private LocationModelFactory $locationModelFactory,
     ) {
     }
 
@@ -62,6 +64,10 @@ class EventResponseModelFactory
         }
         $avatar = $this->fileModelFactory->fromFile($event->getAvatar());
 
+        if (Event::TYPE_LOCAL === $event->getType()) {
+            $locationModel = $this->locationModelFactory->fromEntity($event->getLocation());
+        }
+
         // frontend options
         $frontendOptions = [
             'isEventReadyToStart' => $eventMembers->count() === $event->getCountMembersMax(),
@@ -74,6 +80,7 @@ class EventResponseModelFactory
             $event->getId(),
             $event->getTitle(),
             $event->getDate(),
+            $event->getTimeZone(),
             $event->getType(),
             $event->getParticipationTerms(),
             $event->getDetails(),
@@ -84,6 +91,7 @@ class EventResponseModelFactory
             $event->getCountMembersMax(),
             $categoriesIds,
             $isFavoriteForCurrentUser,
+            $locationModel ?? null,
             $frontendOptions,
         );
     }

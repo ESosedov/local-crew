@@ -21,7 +21,7 @@ class SignUpModel
     #[NotNull]
     private string $name;
     private ?CityModel $city = null;
-    private ?int $age = null;
+    private ?\DateTimeInterface $birthDate = null;
     private ?string $gender = null;
     private ?string $about = null;
     private ?string $avatar = null;
@@ -86,14 +86,14 @@ class SignUpModel
         return $this;
     }
 
-    public function getAge(): ?int
+    public function getBirthDate(): ?\DateTimeInterface
     {
-        return $this->age;
+        return $this->birthDate;
     }
 
-    public function setAge(?int $age): self
+    public function setBirthDate(?\DateTimeInterface $birthDate): self
     {
-        $this->age = $age;
+        $this->birthDate = $birthDate;
 
         return $this;
     }

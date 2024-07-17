@@ -26,8 +26,8 @@ class User extends AbstractBaseUuidEntity implements UserInterface, PasswordAuth
     #[ORM\ManyToOne(targetEntity: City::class)]
     private City $city;
 
-    #[ORM\Column(type: 'integer', nullable: true, options: ['comment' => 'User`s age'])]
-    private ?int $age;
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    private ?\DateTimeInterface $birthDate;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true, options: ['comment' => 'User`s gender'])]
     private ?string $gender;
@@ -87,14 +87,14 @@ class User extends AbstractBaseUuidEntity implements UserInterface, PasswordAuth
         return $this;
     }
 
-    public function getAge(): ?int
+    public function getBirthDate(): ?\DateTimeInterface
     {
-        return $this->age;
+        return $this->birthDate;
     }
 
-    public function setAge(?int $age): self
+    public function setBirthDate(?\DateTimeInterface $birthDate): self
     {
-        $this->age = $age;
+        $this->birthDate = $birthDate;
 
         return $this;
     }
