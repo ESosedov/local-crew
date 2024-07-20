@@ -9,6 +9,7 @@ use App\Model\Event\CreateEventModel;
 use App\Model\Event\EventResponseModel;
 use App\Model\Event\Factory\EventResponseModelFactory;
 use App\Model\Event\ListFilterModel;
+use App\Model\Event\LocalListFilterModel;
 use App\Model\Event\ResponseListModel;
 use App\Query\Event\EventListQuery;
 use App\Repository\CategoryRepository;
@@ -83,6 +84,14 @@ class EventService
         $eventsModels = $this->eventResponseModelFactory->fromEvents($listData, $user);
 
         return new ResponseListModel($eventsModels, $countList);
+    }
+
+    public function getLocalList(LocalListFilterModel $filters, User|null $user): array
+    {
+        $listData = $this->eventListQuery->getLocalListData($filters);
+
+        return $this->eventResponseModelFactory->fromEvents($listData, $user);
+
     }
 
     public function getById(string $id, User $user): EventResponseModel

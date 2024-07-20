@@ -9,6 +9,7 @@ use App\Form\Event\CreateForm;
 use App\Model\Event\CreateEventModel;
 use App\Model\Event\EventResponseModel;
 use App\Model\Event\ListFilterModel;
+use App\Model\Event\LocalListFilterModel;
 use App\Model\Event\ResponseListModel;
 use App\Service\Event\EventService;
 use App\Service\EventRequestService\EventRequestService;
@@ -85,6 +86,35 @@ class EventController extends ApiController
         $user = $this->getUser();
 
         return $this->json($eventService->getList($filterModel, $user));
+    }
+
+    /**
+     * @OA\Parameter(
+     *      name="json",
+     *      in="query",
+     *
+     *      @Model(type=LocalListFilterModel::class)
+     *  )
+     *
+     * @OA\Response(
+     *      response=200,
+     *      description="Returns list local event",
+     *
+     *      @Model(type=ListFilterModel::class)
+     *  )
+     *
+     * @OA\Tag(name="Event")
+     *
+     * @Security(name="Bearer")
+     */
+    #[Route(path: '/api/v1/event/local/list', methods: ['POST'])]
+    public function getLocalList(
+        #[RequestBody] LocalListFilterModel $filterModel,
+        EventService $eventService,
+    ): JsonResponse {
+        $user = $this->getUser();
+
+        return $this->json($eventService->getLocalList($filterModel, $user));
     }
 
     /**

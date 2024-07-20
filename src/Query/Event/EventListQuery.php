@@ -5,6 +5,7 @@ namespace App\Query\Event;
 use App\Entity\Event;
 use App\Entity\EventRequest;
 use App\Model\Event\ListFilterModel;
+use App\Model\Event\LocalListFilterModel;
 use App\Repository\EventRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -103,6 +104,53 @@ class EventListQuery
             ->setParameters([
                 'newEventRequest' => EventRequest::STATUS_NEW,
             ]);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getLocalListData(LocalListFilterModel $filters): array
+    {
+        $coordinates = array_map(static function ($coordinate) {
+            return [$coordinate->getLatitude(), $coordinate->getLongitude()];
+        }, $filters->getPoints());
+
+        $qb = $this->eventRepository->createQueryBuilder('event');
+        $qb
+            ->select('event')
+            ->leftJoin('event.members', 'eventMember')
+            ->leftJoin('eventMember.user', 'members')
+            ->leftJoin(
+                'event.requests',
+                'requests',
+                Join::WITH,
+                $qb->expr()->andX(
+                    'requests.status = :newEventRequest',
+                    'requests.event = event',
+                ),
+            )
+            ->leftJoin('requests.createdBy', 'candidates')
+            ->leftJoin('event.categories', 'categories')
+            ->setParameters([
+                'newEventRequest' => EventRequest::STATUS_NEW,
+            ]);
+
+
+        if ([] !== $filters->getPoints()) {
+            $qb
+                ->innerJoin('event.location', 'location')
+                ->where(
+                    $qb->expr()->andX(
+                        $qb->expr()->gte('location.latitude', ':minLat'),
+                        $qb->expr()->lte('location.latitude', ':maxLat'),
+                        $qb->expr()->gte('location.longitude', ':minLon'),
+                        $qb->expr()->lte('location.longitude', ':maxLon'),
+                    ),
+                )
+                ->setParameter('minLat', min(array_column($coordinates, 0)))
+                ->setParameter('maxLat', max(array_column($coordinates, 0)))
+                ->setParameter('minLon', min(array_column($coordinates, 1)))
+                ->setParameter('maxLon', max(array_column($coordinates, 1)));
+        }
 
         return $qb->getQuery()->getResult();
     }
