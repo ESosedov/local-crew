@@ -78,8 +78,8 @@ class EventService
 
     public function getList(ListFilterModel $filterModel, User|null $user): ResponseListModel
     {
-        $listData = $this->eventListQuery->getListData($filterModel);
-        $countList = $this->eventListQuery->getCountList($filterModel);
+        $listData = $this->eventListQuery->getListData($filterModel, $user);
+        $countList = $this->eventListQuery->getCountList($filterModel, $user);
 
         $eventsModels = $this->eventResponseModelFactory->fromEvents($listData, $user);
 
@@ -91,7 +91,6 @@ class EventService
         $listData = $this->eventListQuery->getLocalListData($filters);
 
         return $this->eventResponseModelFactory->fromEvents($listData, $user);
-
     }
 
     public function getById(string $id, User $user): EventResponseModel

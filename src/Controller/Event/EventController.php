@@ -12,6 +12,7 @@ use App\Model\Event\ListFilterModel;
 use App\Model\Event\LocalListFilterModel;
 use App\Model\Event\ResponseListModel;
 use App\Service\Event\EventService;
+use App\Service\Event\FavoriteEventsService;
 use App\Service\EventRequestService\EventRequestService;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
@@ -159,5 +160,59 @@ class EventController extends ApiController
         $user = $this->getUser();
 
         return $this->json($eventService->getById($id, $user));
+    }
+
+    /**
+     * @OA\Parameter(
+     *     name="id",
+     *     in="path",
+     *     required=true,
+     *
+     *     @OA\Schema(
+     *         type="string"
+     *     ),
+     *     description="ID of Event"
+     * )
+     *
+     * @OA\Tag(name="Event")
+     *
+     * @Security(name="Bearer")
+     */
+    #[Route(path: '/api/v1/event/{id}/add-to-favorite', requirements: ['id' => '%routing.uuid_regexp%'], methods: ['POST'])]
+    public function addToFavorite(
+        string $id,
+        FavoriteEventsService $favoriteEventsService,
+    ): JsonResponse {
+        $user = $this->getUser();
+        $favoriteEventsService->add($id, $user);
+
+        return $this->emptyResponse();
+    }
+
+    /**
+     * @OA\Parameter(
+     *     name="id",
+     *     in="path",
+     *     required=true,
+     *
+     *     @OA\Schema(
+     *         type="string"
+     *     ),
+     *     description="ID of Event"
+     * )
+     *
+     * @OA\Tag(name="Event")
+     *
+     * @Security(name="Bearer")
+     */
+    #[Route(path: '/api/v1/event/{id}/remove-from-favorite', requirements: ['id' => '%routing.uuid_regexp%'], methods: ['DELETE'])]
+    public function removeFromFavorite(
+        string $id,
+        FavoriteEventsService $favoriteEventsService,
+    ): JsonResponse {
+        $user = $this->getUser();
+        $favoriteEventsService->remove($id, $user);
+
+        return $this->emptyResponse();
     }
 }
