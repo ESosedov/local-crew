@@ -48,11 +48,6 @@ class EventResponseModelFactory
                 $isApprovedForCurrentUser = true;
             }
         }
-        $categoriesIds = [];
-        $categories = $event->getCategories();
-        foreach ($categories as $category) {
-            $categoriesIds[] = $category->getId();
-        }
         // $requests = $this->eventRequestRepository->getNewByEvent($event);
         $requests = $event->getRequests();
         foreach ($requests as $request) {
@@ -90,12 +85,12 @@ class EventResponseModelFactory
             $event->getParticipationTerms(),
             $event->getDetails(),
             $event->getCountMembersMax(),
+            $event->getCategories(),
             $isFavoriteForCurrentUser,
             $avatar,
             $organizerUserModel,
             $memberModels,
             $candidateModels,
-            $categoriesIds,
             $locationModel ?? null,
             $frontendOptions,
         );
@@ -108,7 +103,6 @@ class EventResponseModelFactory
             return $row['eventModel']->getId();
         }, $eventsData);
 
-        $categoriesMap = $this->eventQuery->getCategoriesById($eventsIs);
         $candidatesMap = $this->eventQuery->getCandidatesByIds($eventsIs);
         $membersMap = $this->eventQuery->getMembersByIds($eventsIs);
         foreach ($eventsData as $row) {
@@ -167,8 +161,7 @@ class EventResponseModelFactory
                 ->setMembers($members)
                 ->setCandidates($candidates)
                 ->setAvatar($eventAvatar)
-                ->setOrganizer($organizerModel)
-                ->setCategory($categoriesMap[$eventModel->getId()]);
+                ->setOrganizer($organizerModel);
 
             $result[] = $eventModel;
         }

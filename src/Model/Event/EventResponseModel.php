@@ -19,6 +19,8 @@ class EventResponseModel
         private ?string $participationTerms,
         private ?string $details,
         private ?int $countMembersMax,
+        /** @var string[] */
+        private array $category = [],
         private bool $isFavorite = false,
         private ?FileModel $avatar = null,
         private ?UserPublicModel $organizer = null,
@@ -26,8 +28,7 @@ class EventResponseModel
         private array $members = [],
         /** @var CandidateModel[] */
         private array $candidates = [],
-        /** @var string[] */
-        private array $category = [],
+
         private ?LocationModel $location = null,
         /** @var bool[] */
         private array $frontendOptions = [],

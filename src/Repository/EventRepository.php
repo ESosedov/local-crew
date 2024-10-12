@@ -34,7 +34,7 @@ class EventRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('event');
         $qb
-            ->select('event', 'eventMember', 'members', 'requests', 'candidates', 'categories')
+            ->select('event', 'eventMember', 'members', 'requests', 'candidates')
             ->leftJoin('event.members', 'eventMember')
             ->leftJoin('eventMember.user', 'members')
             ->leftJoin(
@@ -47,7 +47,6 @@ class EventRepository extends ServiceEntityRepository
                 ),
             )
             ->leftJoin('requests.createdBy', 'candidates')
-            ->leftJoin('event.categories', 'categories')
             ->where('event.id = :id')
             ->setParameters([
                 'id' => $id,

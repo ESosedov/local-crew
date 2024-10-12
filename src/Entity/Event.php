@@ -23,7 +23,6 @@ class Event extends AbstractBaseUuidEntity
 
     public function __construct()
     {
-        $this->categories = new ArrayCollection();
         $this->members = new ArrayCollection();
         $this->requests = new ArrayCollection();
     }
@@ -54,11 +53,11 @@ class Event extends AbstractBaseUuidEntity
     #[ORM\Column(type: 'integer', nullable: true)]
     private int|null $countMembersMax;
 
-    #[ORM\ManyToMany(targetEntity: Category::class)]
-    #[ORM\JoinTable(name: 'category_evens')]
-    #[ORM\JoinColumn(name: 'category_id', referencedColumnName: 'id')]
-    #[ORM\InverseJoinColumn(name: 'event_id', referencedColumnName: 'id')]
-    private Collection $categories;
+    /**
+     * @var array<string>
+     */
+    #[ORM\Column(type: 'json', options: ['default' => '{}', 'jsonb' => true])]
+    private array $categories;
 
     #[ORM\OneToMany(mappedBy: 'event', targetEntity: EventMember::class)]
     private Collection $members;
@@ -165,16 +164,16 @@ class Event extends AbstractBaseUuidEntity
         return $this;
     }
 
-    public function getCategories(): Collection
+    public function getCategories(): array
     {
         return $this->categories;
     }
 
-    public function addCategory(Category $category): void
+    public function setCategories(array $categories): self
     {
-        if (!$this->categories->contains($category)) {
-            $this->categories->add($category);
-        }
+        $this->categories = $categories;
+
+        return $this;
     }
 
     public function getMembers(): Collection

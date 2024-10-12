@@ -151,7 +151,6 @@ class EventListQuery
                 ),
             )
             ->leftJoin('requests.createdBy', 'candidates')
-            ->leftJoin('event.categories', 'categories')
             ->setParameters([
                 'newEventRequest' => EventRequest::STATUS_NEW,
             ]);
@@ -192,7 +191,6 @@ class EventListQuery
             ->innerJoin('eventMemberOrganizer.user', 'organizerUser')
             ->leftJoin('event.avatar', 'eventAvatar')
             ->leftJoin('organizerUser.avatar', 'organizerAvatar')
-            ->leftJoin('event.categories', 'categories')
             ->setParameter('true', true);
 
         if (null !== $user) {
@@ -235,7 +233,8 @@ class EventListQuery
                                 event.type,
                                 event.participationTerms,
                                 event.details,
-                                event.countMembersMax
+                                event.countMembersMax,
+                                event.categories
                             ) AS eventModel',
             )
             ->addSelect(
@@ -301,7 +300,8 @@ class EventListQuery
                                 event.type,
                                 event.participationTerms,
                                 event.details,
-                                event.countMembersMax
+                                event.countMembersMax,
+                                event.categories
                             ) AS eventModel',
             )
             ->addSelect(

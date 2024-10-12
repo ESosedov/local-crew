@@ -28,7 +28,6 @@ class EventService
         private EventMemberService $eventMemberService,
         private EventResponseModelFactory $eventResponseModelFactory,
         private EventListQuery $eventListQuery,
-        private CategoryRepository $categoryRepository,
         private EventRepository $eventRepository,
         private EventListItemModelFactory $eventListItemModelFactory,
     ) {
@@ -51,12 +50,8 @@ class EventService
             ->setDetails($createEventModel->getDetails())
             ->setAvatar($avatar)
             ->setCreatedBy($user)
-            ->setCountMembersMax($createEventModel->getCountMembersMax());
-
-        $categories = $this->categoryRepository->getByIds($createEventModel->getCategories());
-        foreach ($categories as $category) {
-            $event->addCategory($category);
-        }
+            ->setCountMembersMax($createEventModel->getCountMembersMax())
+            ->setCategories($createEventModel->getCategories());
 
         $this->entityManager->persist($event);
 

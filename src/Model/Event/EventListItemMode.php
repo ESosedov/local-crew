@@ -16,10 +16,11 @@ class EventListItemMode
         private ?string $participationTerms,
         private ?string $details,
         private ?int $countMembersMax,
+        /** @var array<string> */
+        private array $category = [],
         private ?int $countMembers = null,
         private bool $isFavorite = false,
         private ?FileModel $avatar = null,
-        private array $category = [],
         private ?LocationModel $location = null,
         /** @var bool[] */
         private array $frontendOptions = [],
