@@ -3,11 +3,16 @@
 namespace App\Query\Event;
 
 use App\Entity\Event;
+use App\Entity\EventMember;
 use App\Entity\EventRequest;
 use App\Entity\FavoriteEvent;
 use App\Entity\User;
+use App\Model\Event\EventListItemMode;
+use App\Model\Event\EventResponseModel;
 use App\Model\Event\ListFilterModel;
 use App\Model\Event\LocalListFilterModel;
+use App\Model\File\FileDTO;
+use App\Model\User\UserPublicModel;
 use App\Repository\EventRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -21,7 +26,7 @@ class EventListQuery
     /**
      * @return Event[]
      */
-    public function getListData(ListFilterModel $filterModel, User $user = null): array
+    public function getListData(ListFilterModel $filterModel, ?User $user = null): array
     {
         $qb = $this->getQBList($filterModel, $user);
         $qb
@@ -35,9 +40,9 @@ class EventListQuery
         return $qb->getQuery()->getResult();
     }
 
-    public function getCountList(ListFilterModel $filterModel, User $user = null): int
+    public function getCountList(ListFilterModel $filterModel, ?User $user = null): int
     {
-        $qb = $this->getQBList($filterModel, $user);
+        $qb = $this->getQBListNew($filterModel, $user);
 
         return $qb
             ->select('COUNT(DISTINCT(event.id))')
@@ -46,7 +51,7 @@ class EventListQuery
             ->getSingleScalarResult();
     }
 
-    private function getQBList(ListFilterModel $filterModel, User $user = null): QueryBuilder
+    private function getQBList(ListFilterModel $filterModel, ?User $user = null): QueryBuilder
     {
         $qb = $this->eventRepository->createQueryBuilder('event');
         $qb
@@ -65,6 +70,7 @@ class EventListQuery
             ->leftJoin('event.categories', 'categories')
             ->setParameters([
                 'newEventRequest' => EventRequest::STATUS_NEW,
+                'true' => true,
             ]);
 
         if (null !== $user) {
@@ -82,16 +88,7 @@ class EventListQuery
         }
         if (null !== $filterModel->getOrganizerId()) {
             $qb
-                ->innerJoin(
-                    'event.members',
-                    'eventMemberOrganizer',
-                    Join::WITH,
-                    $qb->expr()->andX(
-                        'eventMemberOrganizer.isOrganizer = :true',
-                        'eventMemberOrganizer.user = :organizerId',
-                    ),
-                )
-                ->setParameter('true', true)
+                ->andWhere('eventMemberOrganizer.user = :organizerId')
                 ->setParameter('organizerId', $filterModel->getOrganizerId());
         }
 
@@ -177,5 +174,217 @@ class EventListQuery
         }
 
         return $qb->getQuery()->getResult();
+    }
+
+    public function getQBListNew(ListFilterModel $filterModel, ?User $user): QueryBuilder
+    {
+        $qb = $this->eventRepository->createQueryBuilder('event');
+        $qb
+            ->innerJoin(
+                EventMember::class,
+                'eventMemberOrganizer',
+                Join::WITH,
+                $qb->expr()->andX(
+                    'eventMemberOrganizer.isOrganizer = :true',
+                    'eventMemberOrganizer.event = event',
+                ),
+            )
+            ->innerJoin('eventMemberOrganizer.user', 'organizerUser')
+            ->leftJoin('event.avatar', 'eventAvatar')
+            ->leftJoin('organizerUser.avatar', 'organizerAvatar')
+            ->leftJoin('event.categories', 'categories')
+            ->setParameter('true', true);
+
+        if (null !== $user) {
+            $qb
+                ->leftJoin(
+                    FavoriteEvent::class,
+                    'favoriteEvent',
+                    Join::WITH,
+                    $qb->expr()->andX(
+                        'favoriteEvent.event = event',
+                        'favoriteEvent.user = :user',
+                    ),
+                )
+                ->setParameter('user', $user);
+
+            if (true === $filterModel->isFavoriteOnly()) {
+                $qb->andWhere($qb->expr()->isNotNull('favoriteEvent.id'));
+            }
+        }
+
+        if (null !== $filterModel->getOrganizerId()) {
+            $qb
+                ->andWhere('organizerUser.id = :organizerId')
+                ->setParameter('organizerId', $filterModel->getOrganizerId());
+        }
+
+        return $qb->distinct();
+    }
+
+    public function getNewListDataListFilterModel($filterModel, ?User $user): array
+    {
+        $qb = $this->getQBListNew($filterModel, $user);
+        $qb
+            ->select(
+                'NEW '.EventResponseModel::class.'(
+                                (event.id),
+                                event.title,
+                                event.date,
+                                event.timeZone,
+                                event.type,
+                                event.participationTerms,
+                                event.details,
+                                event.countMembersMax
+                            ) AS eventModel',
+            )
+            ->addSelect(
+                'NEW '.UserPublicModel::class.'(
+                                (organizerUser.id),
+                                organizerUser.name,
+                                organizerUser.info,
+                                organizerUser.createdAt,
+                                organizerUser.birthDate,
+                                organizerUser.gender
+                            ) as organizerModel',
+            )
+            ->addSelect(
+                'NEW '.FileDTO::class.'(
+                                (eventAvatar.id),
+                                eventAvatar.externalId,
+                                eventAvatar.extension
+                        ) AS eventAvatarDTO',
+            )
+            ->addSelect(
+                'NEW '.FileDTO::class.'(
+                                (organizerAvatar.id),
+                                organizerAvatar.externalId,
+                                organizerAvatar.extension
+                        ) AS organizerAvatarDTO',
+            )
+            ->addSelect('event.date AS HIDDEN date')
+            ->addSelect('event.createdAt AS HIDDEN createdAt');
+
+        if (null !== $user) {
+            $qb->addSelect('CASE WHEN favoriteEvent.id IS NOT NULL THEN TRUE ELSE FALSE END AS isFavorite');
+        }
+
+        $qb
+            ->orderBy($filterModel->getOrderBy(), $filterModel->getOrderDirection())
+            ->setFirstResult(($filterModel->getPage() - 1) * $filterModel->getItemsPerPage())
+            ->setMaxResults($filterModel->getItemsPerPage());
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getEventsListCount(ListFilterModel $filterModel, ?User $user): int
+    {
+        $qb = $this->getQBEventsList($filterModel, $user);
+
+        return $qb
+            ->select('COUNT(DISTINCT(event.id))')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function getEventsListData(ListFilterModel $filterModel, ?User $user): array
+    {
+        $qb = $this->getQBEventsList($filterModel, $user);
+        $qb
+            ->select(
+                'NEW '.EventListItemMode::class.'(
+                                (event.id),
+                                event.title,
+                                event.date,
+                                event.timeZone,
+                                event.type,
+                                event.participationTerms,
+                                event.details,
+                                event.countMembersMax
+                            ) AS eventModel',
+            )
+            ->addSelect(
+                'NEW '.FileDTO::class.'(
+                                (eventAvatar.id),
+                                eventAvatar.externalId,
+                                eventAvatar.extension
+                        ) AS eventAvatarDTO',
+            )
+            ->addSelect('location.id AS locationId')
+            ->addSelect('location.latitude AS locationLatitude')
+            ->addSelect('location.longitude AS locationLongitude')
+            ->addSelect('location.city AS locationCity')
+            ->addSelect('location.street AS locationStreet')
+            ->addSelect('location.streetNumber AS locationStreetNumber')
+            ->addSelect('location.placeName AS locationPlaceName')
+            ->addSelect('organizerUser.id AS organizerId')
+            ->addSelect('COUNT(eventMember) AS countMembers')
+            ->addSelect('event.date AS HIDDEN date')
+            ->addSelect('event.createdAt AS HIDDEN createdAt')
+            ->leftJoin('event.members', 'eventMember')
+            ->groupBy(
+                'event.id',
+                'eventAvatar.id',
+                'organizerId',
+                'location.id',
+            )
+            ->orderBy($filterModel->getOrderBy(), $filterModel->getOrderDirection())
+            ->setFirstResult(($filterModel->getPage() - 1) * $filterModel->getItemsPerPage())
+            ->setMaxResults($filterModel->getItemsPerPage());
+
+        if (null !== $user) {
+            $qb
+                ->addSelect('CASE WHEN favoriteEvent.id IS NOT NULL THEN TRUE ELSE FALSE END AS isFavorite')
+                ->addGroupBy('favoriteEvent.id');
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    private function getQBEventsList(ListFilterModel $filterModel, ?User $user): QueryBuilder
+    {
+        $qb = $this->eventRepository->createQueryBuilder('event');
+        $qb
+            ->innerJoin(
+                EventMember::class,
+                'eventMemberOrganizer',
+                Join::WITH,
+                $qb->expr()->andX(
+                    'eventMemberOrganizer.isOrganizer = :true',
+                    'eventMemberOrganizer.event = event',
+                ),
+            )
+            ->innerJoin('eventMemberOrganizer.user', 'organizerUser')
+            ->leftJoin('event.avatar', 'eventAvatar')
+            // ->leftJoin('organizerUser.avatar', 'organizerAvatar')
+            ->leftJoin('event.location', 'location')
+            ->setParameter('true', true);
+
+        if (null !== $user) {
+            $qb
+                ->leftJoin(
+                    FavoriteEvent::class,
+                    'favoriteEvent',
+                    Join::WITH,
+                    $qb->expr()->andX(
+                        'favoriteEvent.event = event',
+                        'favoriteEvent.user = :user',
+                    ),
+                )
+                ->setParameter('user', $user);
+
+            if (true === $filterModel->isFavoriteOnly()) {
+                $qb->andWhere($qb->expr()->isNotNull('favoriteEvent.id'));
+            }
+        }
+
+        if (null !== $filterModel->getOrganizerId()) {
+            $qb
+                ->andWhere('organizerUser.id = :organizerId')
+                ->setParameter('organizerId', $filterModel->getOrganizerId());
+        }
+
+        return $qb->distinct();
     }
 }

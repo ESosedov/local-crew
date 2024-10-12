@@ -3,6 +3,7 @@
 namespace App\Service\File;
 
 use App\Entity\File;
+use App\Model\File\FileDTO;
 use Cloudinary\Api\Upload\UploadApi;
 use Cloudinary\Configuration\Configuration;
 use Doctrine\ORM\EntityManagerInterface;
@@ -68,5 +69,20 @@ class CloudinaryStorage implements FileStorageInterface
             $width,
             $file->getExternalId(),
             $file->getExtension());
+    }
+
+    public function generateDownloadUrlFromDTO(FileDTO $fileDTO, string $size): string
+    {
+        $width = match ($size) {
+            FileService::IMAGE_SIZE_SMALL => self::WIDTH_SMALL,
+            FileService::IMAGE_SIZE_MEDIUM => self::WIDTH_MEDIUM,
+            FileService::IMAGE_SIZE_LARGE => self::WIDTH_LARGE,
+        };
+
+        return sprintf(
+            'https://res.cloudinary.com/dmmtj67jc/image/upload/w_%d/q_auto:best/%s.%s',
+            $width,
+            $fileDTO->getExternalId(),
+            $fileDTO->getExtension());
     }
 }

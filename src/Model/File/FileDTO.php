@@ -7,7 +7,7 @@ class FileDTO
     public function __construct(
         private string $id,
         private string $externalId,
-        private string $url,
+        private string $extension,
     ) {
     }
 
@@ -21,8 +21,8 @@ class FileDTO
         return $this->externalId;
     }
 
-    public function getUrl(): string
+    public function getExtension(): string
     {
-        return $this->url;
+        return $this->extension;
     }
 }

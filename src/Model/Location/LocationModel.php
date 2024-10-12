@@ -10,7 +10,7 @@ class LocationModel
         private string $city,
         private string $street,
         private string $streetNumber,
-        private string|null $placeName,
+        private ?string $placeName,
     ) {
     }
 

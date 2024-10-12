@@ -16,19 +16,19 @@ class EventResponseModel
         private \DateTimeInterface $date,
         private string $timeZone,
         private string $type,
-        private string|null $participationTerms,
-        private string|null $details,
-        private FileModel|null $avatar,
-        private UserPublicModel $organizer,
+        private ?string $participationTerms,
+        private ?string $details,
+        private ?int $countMembersMax,
+        private bool $isFavorite = false,
+        private ?FileModel $avatar = null,
+        private ?UserPublicModel $organizer = null,
         /** @var UserPublicModel[] */
-        private array $members,
+        private array $members = [],
         /** @var CandidateModel[] */
-        private array $candidates,
-        private int|null $countMembersMax,
+        private array $candidates = [],
         /** @var string[] */
-        private array $category,
-        private bool $isFavorite,
-        private LocationModel|null $location = null,
+        private array $category = [],
+        private ?LocationModel $location = null,
         /** @var bool[] */
         private array $frontendOptions = [],
     ) {
@@ -113,5 +113,61 @@ class EventResponseModel
     public function getFrontendOptions(): array
     {
         return $this->frontendOptions;
+    }
+
+    public function setIsFavorite(bool $isFavorite): self
+    {
+        $this->isFavorite = $isFavorite;
+
+        return $this;
+    }
+
+    public function setAvatar(?FileModel $avatar): self
+    {
+        $this->avatar = $avatar;
+
+        return $this;
+    }
+
+    public function setOrganizer(?UserPublicModel $organizer): self
+    {
+        $this->organizer = $organizer;
+
+        return $this;
+    }
+
+    public function setMembers(array $members): self
+    {
+        $this->members = $members;
+
+        return $this;
+    }
+
+    public function setCandidates(array $candidates): self
+    {
+        $this->candidates = $candidates;
+
+        return $this;
+    }
+
+    public function setCategory(array $category): self
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    public function setLocation(?LocationModel $location): self
+    {
+        $this->location = $location;
+
+        return $this;
+    }
+
+    public function setFrontendOptions(array $frontendOptions): self
+    {
+        $this->frontendOptions = $frontendOptions;
+
+        return $this;
     }
 }

@@ -9,6 +9,9 @@ use App\Model\File\Factory\FileModelFactory;
 use App\Model\Location\Factory\LocationModelFactory;
 use App\Model\User\Factory\CandidateModelFactory;
 use App\Model\User\Factory\UserPublicModelFactory;
+use App\Model\User\UserPublicModel;
+use App\Query\Event\EventQuery;
+use App\Repository\CategoryRepository;
 use App\Repository\EventMemberRepository;
 use App\Repository\EventRequestRepository;
 
@@ -21,10 +24,12 @@ class EventResponseModelFactory
         private EventRequestRepository $eventRequestRepository,
         private CandidateModelFactory $candidateModelFactory,
         private LocationModelFactory $locationModelFactory,
+        private CategoryRepository $categoryRepository,
+        private EventQuery $eventQuery,
     ) {
     }
 
-    public function fromEvent(Event $event, User|null $currentUser): EventResponseModel
+    public function fromEvent(Event $event, ?User $currentUser): EventResponseModel
     {
         // todo:: add Likes
         $isFavoriteForCurrentUser = false;
@@ -84,16 +89,91 @@ class EventResponseModelFactory
             $event->getType(),
             $event->getParticipationTerms(),
             $event->getDetails(),
+            $event->getCountMembersMax(),
+            $isFavoriteForCurrentUser,
             $avatar,
             $organizerUserModel,
             $memberModels,
             $candidateModels,
-            $event->getCountMembersMax(),
             $categoriesIds,
-            $isFavoriteForCurrentUser,
             $locationModel ?? null,
             $frontendOptions,
         );
+    }
+
+    public function fromEventsListData(array $eventsData, ?User $currentUser): array
+    {
+        $result = [];
+        $eventsIs = array_map(static function ($row) {
+            return $row['eventModel']->getId();
+        }, $eventsData);
+
+        $categoriesMap = $this->eventQuery->getCategoriesById($eventsIs);
+        $candidatesMap = $this->eventQuery->getCandidatesByIds($eventsIs);
+        $membersMap = $this->eventQuery->getMembersByIds($eventsIs);
+        foreach ($eventsData as $row) {
+            /** @var EventResponseModel $eventModel */
+            $eventModel = $row['eventModel'];
+
+            /** @var UserPublicModel $organizerModel */
+            $organizerModel = $row['organizerModel'];
+            $organizerAvatar = $this->fileModelFactory->fromFileDTO($row['organizerAvatarDTO']);
+            $eventModel->setAvatar($organizerAvatar);
+
+            $isFavorite = false;
+            if (array_key_exists('isFavorite', $row)) {
+                $isFavorite = $row['isFavorite'];
+            }
+            $eventModel->setIsFavorite($isFavorite);
+
+            $eventAvatar = $this->fileModelFactory->fromFileDTO($row['eventAvatarDTO']);
+            $candidates = [];
+            $members = [];
+            if (true === array_key_exists($eventModel->getId(), $candidatesMap)) {
+                $candidates = $this->candidateModelFactory->fromUsers(
+                    $candidatesMap[$eventModel->getId()], $eventModel->getId(),
+                );
+            }
+
+            if (true === array_key_exists($eventModel->getId(), $membersMap)) {
+                $members = $this->userPublicModelFactory->fromUsers($membersMap[$eventModel->getId()]);
+            }
+
+            $isWaitingForApprovalForCurrentUser = false;
+            foreach ($candidates as $candidate) {
+                if ($candidate->getUser()->getId() === $currentUser?->getId()) {
+                    $isWaitingForApprovalForCurrentUser = true;
+                    break;
+                }
+            }
+            $isApprovedForCurrentUser = false;
+            foreach ($members as $member) {
+                if ($member->getId() === $currentUser?->getId()) {
+                    $isApprovedForCurrentUser = true;
+                    break;
+                }
+            }
+
+            // frontend options
+            $frontendOptions = [
+                'isEventReadyToStart' => count($members) === $eventModel->getCountMembersMax(),
+                'isApprovedForCurrentUser' => $isApprovedForCurrentUser,
+                'isWaitingForApprovalForCurrentUser' => $isWaitingForApprovalForCurrentUser,
+                'isActiveUserEvent' => $organizerModel->getId() === $currentUser?->getId(),
+            ];
+
+            $eventModel
+                ->setFrontendOptions($frontendOptions)
+                ->setMembers($members)
+                ->setCandidates($candidates)
+                ->setAvatar($eventAvatar)
+                ->setOrganizer($organizerModel)
+                ->setCategory($categoriesMap[$eventModel->getId()]);
+
+            $result[] = $eventModel;
+        }
+
+        return $result;
     }
 
     /**
@@ -101,7 +181,7 @@ class EventResponseModelFactory
      *
      * @return EventResponseModel[]
      */
-    public function fromEvents(array $events, User|null $currentUser): array
+    public function fromEvents(array $events, ?User $currentUser): array
     {
         $eventModels = [];
         if ([] === $events) {

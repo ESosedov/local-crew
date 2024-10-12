@@ -3,6 +3,7 @@
 namespace App\Service\File;
 
 use App\Entity\File;
+use App\Model\File\FileDTO;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -41,5 +42,10 @@ class FileService
     public function generateDownloadUrl(File $file, string $size): string
     {
         return $this->storage->generateDownloadUrl($file, $size);
+    }
+
+    public function generateDownloadUrlFromDTO(FileDTO $fileDTO, string $size): string
+    {
+        return $this->storage->generateDownloadUrlFromDTO($fileDTO, $size);
     }
 }

@@ -36,4 +36,18 @@ class CandidateModelFactory
 
         return $result;
     }
+
+    /**
+     * @return CandidateModel[]
+     */
+    public function fromUsers(array $users, string $eventId): array
+    {
+        $candidates = [];
+        foreach ($users as $user) {
+            $userModel = $this->userPublicModelFactory->fromUser($user);
+            $candidates[] = new CandidateModel($userModel, $eventId);
+        }
+
+        return $candidates;
+    }
 }

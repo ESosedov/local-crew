@@ -6,7 +6,9 @@ use App\Entity\Event;
 use App\Entity\Location;
 use App\Entity\User;
 use App\Model\Event\CreateEventModel;
+use App\Model\Event\EventListModel;
 use App\Model\Event\EventResponseModel;
+use App\Model\Event\Factory\EventListItemModelFactory;
 use App\Model\Event\Factory\EventResponseModelFactory;
 use App\Model\Event\ListFilterModel;
 use App\Model\Event\LocalListFilterModel;
@@ -28,6 +30,7 @@ class EventService
         private EventListQuery $eventListQuery,
         private CategoryRepository $categoryRepository,
         private EventRepository $eventRepository,
+        private EventListItemModelFactory $eventListItemModelFactory,
     ) {
     }
 
@@ -76,17 +79,19 @@ class EventService
         return $this->eventResponseModelFactory->fromEvent($event, $user);
     }
 
-    public function getList(ListFilterModel $filterModel, User|null $user): ResponseListModel
+    public function getList(ListFilterModel $filterModel, ?User $user): ResponseListModel
     {
-        $listData = $this->eventListQuery->getListData($filterModel, $user);
+        // $listData = $this->eventListQuery->getListData($filterModel, $user);
+        $listData = $this->eventListQuery->getNewListDataListFilterModel($filterModel, $user);
+
         $countList = $this->eventListQuery->getCountList($filterModel, $user);
 
-        $eventsModels = $this->eventResponseModelFactory->fromEvents($listData, $user);
+        $eventsModels = $this->eventResponseModelFactory->fromEventsListData($listData, $user);
 
         return new ResponseListModel($eventsModels, $countList);
     }
 
-    public function getLocalList(LocalListFilterModel $filters, User|null $user): array
+    public function getLocalList(LocalListFilterModel $filters, ?User $user): array
     {
         $listData = $this->eventListQuery->getLocalListData($filters);
 
@@ -101,5 +106,14 @@ class EventService
         }
 
         return $this->eventResponseModelFactory->fromEvent($event, $user);
+    }
+
+    public function getEventsList(ListFilterModel $filterModel, ?User $user)
+    {
+        $listData = $this->eventListQuery->getEventsListData($filterModel, $user);
+        $count = $this->eventListQuery->getEventsListCount($filterModel, $user);
+        $models = $this->eventListItemModelFactory->fromEventListData($listData, $user);
+
+        return new EventListModel($models, $count);
     }
 }

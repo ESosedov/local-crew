@@ -107,7 +107,7 @@ class CreateForm extends ApiForm
             ->setDefaults([
                 'data_class' => CreateEventModel::class,
                 'constraints' => [
-                  new Callback($checkLocation),
+                    new Callback($checkLocation),
                 ],
             ]);
     }

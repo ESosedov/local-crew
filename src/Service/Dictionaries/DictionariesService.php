@@ -14,7 +14,7 @@ class DictionariesService
     public function getList(): array
     {
         return [
-        'eventCategories' => $this->getEventCategories(),
+            'eventCategories' => $this->getEventCategories(),
         ];
     }
 

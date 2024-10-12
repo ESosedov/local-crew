@@ -4,8 +4,6 @@ namespace App\Service\Notification;
 
 use App\Notification\NotificationInterface;
 use App\Notification\Push\Push;
-use App\Service\Notification\Push\PushNotificationService;
-use Doctrine\DBAL\Driver\Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Notifier\Exception\TransportExceptionInterface;

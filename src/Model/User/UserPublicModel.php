@@ -9,11 +9,11 @@ class UserPublicModel
     public function __construct(
         private string $id,
         private ?string $name,
-        private FileModel|null $avatar,
         private ?string $about,
         private \DateTimeInterface $registrationDate,
         private ?\DateTimeInterface $birthDate,
         private ?string $gender,
+        private ?FileModel $avatar = null,
     ) {
     }
 

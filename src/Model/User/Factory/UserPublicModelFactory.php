@@ -19,11 +19,11 @@ class UserPublicModelFactory
         return new UserPublicModel(
             $user->getId(),
             $user->getName(),
-            $avatar,
             $user->getInfo(),
             $user->getCreatedAt(),
             $user->getBirthDate(),
             $user->getGender(),
+            $avatar,
         );
     }
 

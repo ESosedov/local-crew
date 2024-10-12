@@ -27,6 +27,7 @@ security:
          - { path: ^/api/doc, roles: PUBLIC_ACCESS }
          - { path: ^/api/v1/dictionaries, roles: PUBLIC_ACCESS }
          - { path: ^/api/v1/event/list, roles: PUBLIC_ACCESS }
+         - { path: ^/api/v1/events/list, roles: PUBLIC_ACCESS }
          - { path: ^/api/v1/email/check, roles: PUBLIC_ACCESS }
          - { path: ^/api/v1/*, roles: IS_AUTHENTICATED_FULLY }
 

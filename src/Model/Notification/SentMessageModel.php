@@ -13,7 +13,7 @@ class SentMessageModel
         private \DateTimeInterface $sentAt,
         private string $type,
         private string $eventId,
-        private string|null $bodyText,
+        private ?string $bodyText,
     ) {
     }
 
